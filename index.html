@@ -1,1077 +1,4130 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>علی اور سارہ - محبت کی کہانی</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
+<meta charset="UTF-8">
 
-        body {
-            background: #1a1a2e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-            overflow: hidden;
-        }
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-        #gameContainer {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            aspect-ratio: 400 / 600;
-            background: #87CEEB;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            touch-action: none;
-        }
+<title>Muhammad Rashid Battle</title>
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            touch-action: none;
-        }
+<style>
 
-        #uiOverlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 12px;
-        }
+*{
+  box-sizing:border-box;
+  user-select:none;
+  -webkit-user-select:none;
+}
 
-        /* Dialogue Box */
-        #dialogueBox {
-            pointer-events: auto;
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid #ffd700;
-            border-radius: 14px;
-            padding: 16px 18px;
-            margin-bottom: 8px;
-            min-height: 90px;
-            max-height: 130px;
-            display: none;
-            backdrop-filter: blur(4px);
-        }
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#071014;
+  font-family:Arial,sans-serif;
+}
 
-        #speakerName {
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-            text-shadow: 0 0 8px rgba(255,215,0,0.4);
-        }
+button,input{
+  font-family:Arial,sans-serif;
+}
 
-        #dialogueText {
-            color: #fff;
-            font-size: 15px;
-            line-height: 1.5;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-            min-height: 40px;
-            word-break: break-word;
-        }
+/* ================= ACCESS ================= */
 
-        #continueHint {
-            color: #aaa;
-            font-size: 12px;
-            text-align: center;
-            margin-top: 6px;
-            animation: blink 1s infinite;
-        }
+#access,
+#mission{
+  position:fixed;
+  inset:0;
+  z-index:99999;
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
 
-        /* Choice Buttons */
-        #choicesContainer {
-            pointer-events: auto;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
+  text-align:center;
+  color:white;
 
-        .choice-btn {
-            pointer-events: auto;
-            background: linear-gradient(135deg, #2d2d5e, #1a1a3e);
-            border: 2px solid #4a4a8a;
-            border-radius: 12px;
-            color: #fff;
-            padding: 14px 18px;
-            font-size: 15px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
+  background:
+  radial-gradient(circle,#174b60,#03080c 75%);
+}
 
-        .choice-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(100, 100, 255, 0.3);
-        }
+#access h1{
+  font-size:27px;
+  margin:5px;
+}
 
-        .choice-btn.good {
-            border-color: #4CAF50;
-            background: linear-gradient(135deg, #1b3a1b, #2d5e2d);
-        }
+#access p{
+  font-size:13px;
+}
 
-        .choice-btn.good:hover {
-            border-color: #66bb6a;
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
-        }
+#code{
+  width:260px;
+  padding:15px;
 
-        .choice-btn.bad {
-            border-color: #f44336;
-            background: linear-gradient(135deg, #3a1b1b, #5e2d2d);
-        }
+  border-radius:12px;
+  border:2px solid #36d6ff;
 
-        .choice-btn.bad:hover {
-            border-color: #ef5350;
-            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
-        }
+  background:#09151b;
+  color:white;
 
-        .choice-btn:active {
-            transform: scale(0.97);
-        }
+  text-align:center;
+  font-size:22px;
+  letter-spacing:6px;
+  outline:none;
+}
 
-        /* Title Screen */
-        #titleScreen {
-            pointer-events: auto;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(6px);
-            z-index: 20;
-        }
+#start,
+#mission button{
+  margin-top:12px;
 
-        #titleScreen h1 {
-            color: #ffd700;
-            font-size: 28px;
-            text-align: center;
-            margin-bottom: 8px;
-            text-shadow: 0 0 30px rgba(255,215,0,0.3);
-        }
+  padding:13px 28px;
 
-        #titleScreen h2 {
-            color: #fff;
-            font-size: 16px;
-            text-align: center;
-            margin-bottom: 30px;
-            opacity: 0.8;
-        }
+  border:0;
+  border-radius:12px;
 
-        #startBtn {
-            pointer-events: auto;
-            background: linear-gradient(135deg, #ffd700, #ffb300);
-            color: #1a1a2e;
-            border: none;
-            border-radius: 50px;
-            padding: 16px 50px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
-        }
+  background:
+  linear-gradient(#13b8f0,#075485);
 
-        #startBtn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.5);
-        }
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+}
 
-        #startBtn:active {
-            transform: scale(0.95);
-        }
+#error{
+  height:20px;
+  margin-top:8px;
+  color:#ff4444;
+}
 
-        /* Ending Overlay */
-        #endingOverlay {
-            pointer-events: auto;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(6px);
-            z-index: 25;
-            padding: 30px;
-            text-align: center;
-        }
+#payInfo{
+  margin-top:18px;
+  padding:12px 18px;
 
-        #endingOverlay .ending-icon {
-            font-size: 60px;
-            margin-bottom: 16px;
-        }
+  border:1px solid #26d99f;
+  border-radius:12px;
 
-        #endingOverlay h2 {
-            color: #ffd700;
-            font-size: 26px;
-            margin-bottom: 12px;
-        }
+  background:rgba(0,0,0,.55);
 
-        #endingOverlay p {
-            color: #ddd;
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            max-width: 320px;
-        }
+  font-size:11px;
+  line-height:1.5;
+}
 
-        #restartBtn {
-            pointer-events: auto;
-            background: linear-gradient(135deg, #ffd700, #ffb300);
-            color: #1a1a2e;
-            border: none;
-            border-radius: 50px;
-            padding: 14px 40px;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+#payInfo b{
+  color:#48e8b4;
+}
 
-        #restartBtn:hover {
-            transform: scale(1.05);
-        }
+#mission{
+  display:none;
+}
 
-        /* Hearts particle */
-        .heart {
-            position: absolute;
-            pointer-events: none;
-            font-size: 20px;
-            animation: floatUp 2s ease-out forwards;
-            z-index: 30;
-        }
+/* ================= GAME ================= */
 
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-120px) scale(0.3); }
-        }
+#game{
+  position:fixed;
+  inset:0;
 
-        /* Score display */
-        #scoreDisplay {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            color: #fff;
-            font-size: 14px;
-            background: rgba(0,0,0,0.5);
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,215,0,0.3);
-            z-index: 10;
-            pointer-events: none;
-        }
+  display:none;
 
-        @media (max-width: 420px) {
-            #gameContainer { max-width: 100%; border-radius: 0; }
-            .choice-btn { padding: 12px 14px; font-size: 14px; }
-            #dialogueBox { padding: 12px 14px; min-height: 80px; }
-            #dialogueText { font-size: 14px; }
-        }
-    </style>
+  overflow:hidden;
+
+  background:#57984d;
+}
+
+#world{
+  position:absolute;
+
+  width:14000px;
+  height:7500px;
+
+  background-color:#57984d;
+
+  background-image:
+  radial-gradient(#3c7839 2px,transparent 2px),
+  radial-gradient(#76ad62 2px,transparent 2px);
+
+  background-size:90px 90px,160px 160px;
+
+  transform-origin:top left;
+}
+
+/* ================= ROADS ================= */
+
+.roadH{
+  position:absolute;
+
+  width:14000px;
+  height:210px;
+
+  background:#62615c;
+
+  box-shadow:
+  inset 0 5px #7d7b74,
+  inset 0 -5px #7d7b74;
+
+  z-index:3;
+}
+
+.roadV{
+  position:absolute;
+
+  width:210px;
+  height:7500px;
+
+  background:#62615c;
+
+  box-shadow:
+  inset 5px 0 #7d7b74,
+  inset -5px 0 #7d7b74;
+
+  z-index:3;
+}
+
+.lineH{
+  position:absolute;
+
+  width:14000px;
+  height:5px;
+
+  background:#d5c65f;
+
+  z-index:4;
+}
+
+.lineV{
+  position:absolute;
+
+  width:5px;
+  height:7500px;
+
+  background:#d5c65f;
+
+  z-index:4;
+}
+
+/* ================= HOUSES ================= */
+
+.house{
+  position:absolute;
+
+  width:250px;
+  height:175px;
+
+  background:#a87555;
+
+  border:6px solid #3d2920;
+
+  z-index:25;
+}
+
+.roof{
+  position:absolute;
+
+  left:-14px;
+  top:-38px;
+
+  width:266px;
+  height:45px;
+
+  background:#63352a;
+
+  border:5px solid #321b16;
+}
+
+.door{
+  position:absolute;
+
+  width:43px;
+  height:68px;
+
+  bottom:0;
+  left:102px;
+
+  background:#392219;
+}
+
+.window{
+  position:absolute;
+
+  width:44px;
+  height:39px;
+
+  top:55px;
+
+  background:#9de1eb;
+
+  border:4px solid #43342b;
+}
+
+.wl{
+  left:18px;
+}
+
+.wr{
+  right:18px;
+}
+
+/* ================= TREES ================= */
+
+.tree{
+  position:absolute;
+
+  font-size:48px;
+
+  z-index:12;
+}
+
+/* ================= VEHICLES ================= */
+
+.ride{
+  position:absolute;
+
+  width:95px;
+  height:80px;
+
+  z-index:100;
+
+  text-align:center;
+
+  filter:
+  drop-shadow(4px 7px 4px rgba(0,0,0,.7));
+}
+
+.rideEmoji{
+  font-size:64px;
+  line-height:65px;
+}
+
+.rideLabel{
+  display:inline-block;
+
+  padding:2px 5px;
+
+  border-radius:4px;
+
+  background:rgba(0,0,0,.75);
+
+  color:white;
+
+  font-size:8px;
+}
+
+.vehicleGun{
+  position:absolute;
+
+  width:55px;
+  height:8px;
+
+  left:45px;
+  top:24px;
+
+  background:#101010;
+
+  border-radius:7px;
+
+  transform:rotate(-8deg);
+
+  box-shadow:0 0 5px #000;
+}
+
+.ride.playerVehicle{
+  z-index:3100;
+}
+
+/* ================= CHARACTER ================= */
+
+.character{
+  position:absolute;
+
+  width:44px;
+  height:66px;
+}
+
+.player{
+  z-index:3000;
+}
+
+.saber{
+  z-index:2900;
+}
+
+.enemy{
+  z-index:2800;
+}
+
+.name{
+  position:absolute;
+
+  top:-29px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  white-space:nowrap;
+
+  padding:3px 6px;
+
+  border-radius:4px;
+
+  background:rgba(0,0,0,.9);
+
+  color:white;
+
+  font-size:9px;
+  font-weight:bold;
+}
+
+.healthSmall{
+  position:absolute;
+
+  top:-9px;
+  left:0;
+
+  width:44px;
+  height:6px;
+
+  background:#260808;
+
+  border-radius:5px;
+
+  overflow:hidden;
+}
+
+.healthSmall div{
+  height:100%;
+  background:#1ce34d;
+}
+
+.enemy .healthSmall div{
+  background:#ff2525;
+}
+
+.head{
+  position:absolute;
+
+  width:21px;
+  height:21px;
+
+  left:11px;
+  top:3px;
+
+  border-radius:50%;
+
+  background:#c98c69;
+
+  border:1px solid #222;
+}
+
+.hair{
+  position:absolute;
+
+  width:21px;
+  height:8px;
+
+  left:11px;
+  top:0;
+
+  border-radius:50%;
+
+  background:#15110e;
+
+  z-index:4;
+}
+
+.eye{
+  position:absolute;
+
+  width:3px;
+  height:3px;
+
+  top:12px;
+
+  background:#111;
+
+  border-radius:50%;
+
+  z-index:8;
+}
+
+.eye1{
+  left:15px;
+}
+
+.eye2{
+  left:23px;
+}
+
+.body{
+  position:absolute;
+
+  width:29px;
+  height:25px;
+
+  left:7px;
+  top:23px;
+
+  background:#27383d;
+
+  border-radius:7px;
+}
+
+.enemy .body{
+  background:#8d1717;
+}
+
+.saber .body{
+  background:#236238;
+}
+
+.arm{
+  position:absolute;
+
+  width:7px;
+  height:24px;
+
+  top:24px;
+
+  background:#bd805d;
+
+  border-radius:5px;
+
+  z-index:2;
+}
+
+.arm1{
+  left:0;
+}
+
+.arm2{
+  right:0;
+}
+
+.leg{
+  position:absolute;
+
+  width:8px;
+  height:21px;
+
+  top:45px;
+
+  background:#202629;
+
+  border-radius:5px;
+}
+
+.leg1{
+  left:9px;
+}
+
+.leg2{
+  right:9px;
+}
+
+/* ================= GUN ================= */
+
+.gun{
+  position:absolute;
+
+  width:34px;
+  height:7px;
+
+  left:26px;
+  top:31px;
+
+  background:#111;
+
+  border:1px solid #555;
+
+  border-radius:3px;
+
+  z-index:50;
+
+  transform:rotate(-4deg);
+
+  box-shadow:
+  1px 2px 2px rgba(0,0,0,.8);
+}
+
+.gun:after{
+  content:"";
+
+  position:absolute;
+
+  width:7px;
+  height:11px;
+
+  left:3px;
+  top:5px;
+
+  background:#222;
+
+  transform:rotate(10deg);
+
+  border-radius:2px;
+}
+
+/* Vehicle rider gun */
+
+.driverInVehicle{
+  position:absolute;
+
+  left:25px;
+  top:3px;
+
+  width:44px;
+  height:66px;
+
+  z-index:500;
+}
+
+.driverInVehicle .gun{
+  display:block;
+}
+
+.vehicleName{
+  position:absolute;
+
+  top:-28px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  white-space:nowrap;
+
+  background:rgba(0,0,0,.9);
+
+  color:white;
+
+  padding:3px 6px;
+
+  border-radius:4px;
+
+  font-size:9px;
+  font-weight:bold;
+}
+
+/* ================= WALK ================= */
+
+.walk .arm1{
+  animation:a1 .18s infinite alternate;
+}
+
+.walk .arm2{
+  animation:a2 .18s infinite alternate;
+}
+
+.walk .leg1{
+  animation:l1 .18s infinite alternate;
+}
+
+.walk .leg2{
+  animation:l2 .18s infinite alternate;
+}
+
+@keyframes a1{
+  from{transform:rotate(25deg)}
+  to{transform:rotate(-25deg)}
+}
+
+@keyframes a2{
+  from{transform:rotate(-25deg)}
+  to{transform:rotate(25deg)}
+}
+
+@keyframes l1{
+  from{transform:rotate(-20deg)}
+  to{transform:rotate(20deg)}
+}
+
+@keyframes l2{
+  from{transform:rotate(20deg)}
+  to{transform:rotate(-20deg)}
+}
+
+/* ================= HUD ================= */
+
+#hud{
+  position:fixed;
+
+  top:5px;
+  left:5px;
+
+  width:180px;
+
+  z-index:7000;
+
+  padding:7px;
+
+  border-radius:10px;
+
+  background:rgba(2,7,10,.92);
+
+  border:1px solid #849096;
+
+  color:white;
+}
+
+.hudTitle{
+  font-size:12px;
+  font-weight:bold;
+}
+
+.small{
+  font-size:8px;
+  color:#c5d0d4;
+}
+
+.bar{
+  width:100%;
+  height:8px;
+
+  margin-top:3px;
+
+  border-radius:8px;
+
+  overflow:hidden;
+
+  background:#202b30;
+}
+
+#mainHealth{
+  width:100%;
+  height:100%;
+  background:#18dd48;
+}
+
+#saberHealth{
+  width:100%;
+  height:100%;
+  background:#21d965;
+}
+
+.info{
+  margin-top:5px;
+
+  display:flex;
+  justify-content:space-between;
+
+  background:#101a1e;
+
+  padding:5px;
+
+  border-radius:6px;
+
+  font-size:9px;
+}
+
+/* ================= MAP ================= */
+
+#map{
+  position:fixed;
+
+  top:5px;
+  right:5px;
+
+  width:145px;
+  height:112px;
+
+  z-index:7000;
+
+  border:2px solid white;
+
+  border-radius:9px;
+
+  background:rgba(0,0,0,.92);
+
+  color:white;
+
+  font-size:9px;
+
+  padding:4px;
+}
+
+#mapArea{
+  position:absolute;
+
+  left:4px;
+  right:4px;
+  bottom:4px;
+  top:20px;
+
+  overflow:hidden;
+
+  background:#27522e;
+}
+
+.dot{
+  position:absolute;
+
+  width:7px;
+  height:7px;
+
+  transform:translate(-50%,-50%);
+
+  border-radius:50%;
+}
+
+.playerDot{
+  background:#00aaff;
+  border:2px solid white;
+}
+
+.saberDot{
+  background:#2cff63;
+  border:2px solid white;
+}
+
+.enemyDot{
+  background:red;
+  border:1px solid white;
+}
+
+.vehicleDot{
+  width:9px;
+  height:9px;
+
+  background:#ffd21c;
+
+  border:2px solid #111;
+
+  box-shadow:0 0 5px #ffd21c;
+}
+
+/* ================= CONTROLS ================= */
+
+#movement{
+  position:fixed;
+
+  left:10px;
+  bottom:10px;
+
+  width:165px;
+  height:125px;
+
+  z-index:8000;
+}
+
+.move{
+  position:absolute;
+
+  width:53px;
+  height:42px;
+
+  border-radius:10px;
+
+  border:1px solid #879196;
+
+  background:rgba(0,0,0,.75);
+
+  color:white;
+
+  font-size:19px;
+}
+
+.up{
+  left:56px;
+  top:0;
+}
+
+.down{
+  left:56px;
+  bottom:0;
+}
+
+.left{
+  left:0;
+  top:42px;
+}
+
+.right{
+  right:0;
+  top:42px;
+}
+
+/* ================= ACTION BUTTONS ================= */
+
+#actions{
+  position:fixed;
+
+  right:10px;
+  bottom:10px;
+
+  width:115px;
+  height:320px;
+
+  z-index:8000;
+}
+
+.actionBtn{
+  position:absolute;
+
+  right:0;
+
+  width:90px;
+  height:50px;
+
+  border-radius:12px;
+
+  color:white;
+
+  font-size:10px;
+  font-weight:bold;
+
+  border:2px solid rgba(255,255,255,.4);
+}
+
+#vehicleBtn{
+  bottom:0;
+
+  background:#9b6817;
+}
+
+#grenade{
+  bottom:58px;
+
+  background:#315f35;
+}
+
+#reload{
+  bottom:116px;
+
+  background:#245b8d;
+}
+
+#gunSwitch{
+  position:absolute;
+
+  right:0;
+  bottom:174px;
+
+  width:90px;
+  height:50px;
+
+  border-radius:12px;
+
+  background:#613a91;
+
+  color:white;
+
+  border:2px solid rgba(255,255,255,.5);
+
+  font-size:10px;
+  font-weight:bold;
+}
+
+#fire{
+  position:absolute;
+
+  right:4px;
+  bottom:232px;
+
+  width:82px;
+  height:82px;
+
+  border-radius:50%;
+
+  background:
+  radial-gradient(circle,#ff5656,#870000);
+
+  color:white;
+
+  font-size:22px;
+
+  border:2px solid rgba(255,255,255,.45);
+}
+
+/* ================= NOTICE ================= */
+
+#notice{
+  position:fixed;
+
+  left:50%;
+  top:8px;
+
+  transform:translateX(-50%);
+
+  display:none;
+
+  z-index:9000;
+
+  min-width:240px;
+
+  max-width:90%;
+
+  padding:9px 14px;
+
+  border-radius:8px;
+
+  background:rgba(0,0,0,.92);
+
+  border:1px solid #fff;
+
+  color:white;
+
+  font-size:12px;
+
+  font-weight:bold;
+
+  text-align:center;
+}
+
+/* ================= BULLETS ================= */
+
+.bullet{
+  position:absolute;
+
+  height:5px;
+
+  background:#fff27a;
+
+  box-shadow:
+  0 0 8px white,
+  0 0 18px orange;
+
+  transform-origin:left center;
+
+  z-index:5000;
+
+  border-radius:5px;
+
+  pointer-events:none;
+}
+
+.flash{
+  position:absolute;
+
+  width:25px;
+  height:25px;
+
+  border-radius:50%;
+
+  background:#fff8a6;
+
+  box-shadow:
+  0 0 12px white,
+  0 0 22px orange,
+  0 0 35px red;
+
+  z-index:5001;
+
+  pointer-events:none;
+}
+
+.grenadeProjectile{
+  position:absolute;
+
+  font-size:28px;
+
+  z-index:6000;
+}
+
+.explosion{
+  position:absolute;
+
+  font-size:70px;
+
+  z-index:6100;
+
+  filter:drop-shadow(0 0 15px orange);
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+  #hud{
+    top:3px;
+    left:3px;
+
+    width:155px;
+
+    transform:scale(.88);
+
+    transform-origin:top left;
+  }
+
+  #map{
+    top:3px;
+    right:3px;
+
+    width:125px;
+    height:100px;
+  }
+
+  #actions{
+    right:5px;
+    bottom:5px;
+
+    transform:scale(.9);
+
+    transform-origin:bottom right;
+  }
+
+}
+
+</style>
 </head>
+
 <body>
 
-<div id="gameContainer">
-    <canvas id="gameCanvas"></canvas>
-    
-    <div id="scoreDisplay">❤️ دوستی: <span id="score">0</span></div>
+<!-- ================= ACCESS SCREEN ================= -->
 
-    <!-- UI Overlay -->
-    <div id="uiOverlay">
-        <div id="dialogueBox">
-            <div id="speakerName">علی</div>
-            <div id="dialogueText">یہاں کچھ لکھا ہوگا...</div>
-            <div id="continueHint">👇 ٹیپ کریں جاری رکھنے کے لیے</div>
-        </div>
-        <div id="choicesContainer">
-            <button class="choice-btn" data-choice="0"> choice 1</button>
-            <button class="choice-btn" data-choice="1"> choice 2</button>
-        </div>
-    </div>
+<div id="access">
 
-    <!-- Title -->
-    <div id="titleScreen">
-        <h1>🌸 علی اور سارہ 🌸</h1>
-        <h2>ایک انتخاب... ایک محبت کی کہانی</h2>
-        <button id="startBtn">✨ کہانی شروع کریں</button>
-    </div>
+  <div style="font-size:55px">🎮</div>
 
-    <!-- Ending -->
-    <div id="endingOverlay">
-        <div class="ending-icon" id="endingIcon">❤️</div>
-        <h2 id="endingTitle">خوشی</h2>
-        <p id="endingDesc">یہاں کہانی ختم ہوگی</p>
-        <button id="restartBtn">🔄 دوبارہ کھیلیں</button>
-    </div>
+  <h1>MUHAMMAD RASHID</h1>
+
+  <p>ENTER GAME ACCESS CODE</p>
+
+  <input
+    id="code"
+    type="password"
+    inputmode="numeric"
+    maxlength="6"
+    placeholder="••••••">
+
+  <button id="start" onclick="checkCode()">
+    ▶ START GAME
+  </button>
+
+  <div id="error"></div>
+
+  <div id="payInfo">
+
+    <b>GAME ACCESS</b><br><br>
+
+    Send Rs. 5 via Easypaisa<br>
+
+    <b>Muhammad Rashid</b><br>
+
+    <b>03329553010</b><br><br>
+
+    <b>WhatsApp Contact</b><br>
+
+    After sending Rs. 5, contact us on WhatsApp:<br>
+
+    <b>03329553010</b><br><br>
+
+    Then enter your Game Access Code.
+
+  </div>
+
 </div>
 
+
+<!-- ================= MISSION ================= -->
+
+<div id="mission">
+
+  <div style="font-size:55px">🎯</div>
+
+  <h1>
+    MISSION <span id="missionNumber">1</span>
+  </h1>
+
+  <p>
+    Eliminate all enemies.<br>
+    Muhammad Saber will fight automatically.
+  </p>
+
+  <button onclick="startMission()">
+    🚀 START MISSION
+  </button>
+
+</div>
+
+
+<!-- ================= GAME ================= -->
+
+<div id="game">
+
+  <div id="world"></div>
+
+
+  <!-- HUD -->
+
+  <div id="hud">
+
+    <div class="hudTitle">
+      🔵 Muhammad Rashid
+    </div>
+
+    <div class="small">
+      HEALTH 4000
+    </div>
+
+    <div class="bar">
+      <div id="mainHealth"></div>
+    </div>
+
+    <div class="small" style="margin-top:4px">
+      🟢 Muhammad Saber — AUTO
+    </div>
+
+    <div class="bar">
+      <div id="saberHealth"></div>
+    </div>
+
+    <div class="info">
+      <span id="weaponName">PISTOL</span>
+      <span id="ammo">12 / 60</span>
+    </div>
+
+    <div class="info">
+      💣 GRENADES
+      <span id="grenades">40</span>
+    </div>
+
+    <div class="info">
+      🚗 VEHICLE
+      <span id="vehicleStatus">ON FOOT</span>
+    </div>
+
+    <div class="info">
+      👹 ENEMIES
+      <span id="enemyHud">20</span>
+    </div>
+
+  </div>
+
+
+  <!-- MAP -->
+
+  <div id="map">
+
+    🗺 MAP
+    <span id="enemyCount"></span>
+
+    <div id="mapArea">
+
+      <div id="pDot"
+           class="dot playerDot"></div>
+
+      <div id="sDot"
+           class="dot saberDot"></div>
+
+    </div>
+
+  </div>
+
+
+  <div id="notice"></div>
+
+
+  <!-- MOVEMENT -->
+
+  <div id="movement">
+
+    <button class="move up"
+            onclick="movePlayer(0,-1)">
+      ▲
+    </button>
+
+    <button class="move down"
+            onclick="movePlayer(0,1)">
+      ▼
+    </button>
+
+    <button class="move left"
+            onclick="movePlayer(-1,0)">
+      ◀
+    </button>
+
+    <button class="move right"
+            onclick="movePlayer(1,0)">
+      ▶
+    </button>
+
+  </div>
+
+
+  <!-- ACTIONS -->
+
+  <div id="actions">
+
+    <button
+      id="fire"
+      onclick="firePlayer()">
+      🔫
+    </button>
+
+    <button
+      id="gunSwitch"
+      class="actionBtn"
+      onclick="switchGun()">
+      🔄<br>CHANGE GUN
+    </button>
+
+    <button
+      id="reload"
+      class="actionBtn"
+      onclick="reloadGun()">
+      🔃<br>RELOAD
+    </button>
+
+    <button
+      id="grenade"
+      class="actionBtn"
+      onclick="grenade()">
+      💣<br>GRENADE
+    </button>
+
+    <button
+      id="vehicleBtn"
+      class="actionBtn"
+      onclick="toggleVehicle()">
+      🚗<br>ENTER
+    </button>
+
+  </div>
+
+</div>
+
+
 <script>
-    // ========== SETUP ==========
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const container = document.getElementById('gameContainer');
 
-    let W, H;
+/* =====================================================
+   SETTINGS
+===================================================== */
 
-    function resize() {
-        const rect = container.getBoundingClientRect();
-        canvas.width = 400;
-        canvas.height = 600;
-        W = 400;
-        H = 600;
-    }
-    resize();
-    window.addEventListener('resize', resize);
+const ACCESS_CODE = "315315";
 
-    // ========== DOM REFS ==========
-    const dialogueBox = document.getElementById('dialogueBox');
-    const speakerName = document.getElementById('speakerName');
-    const dialogueText = document.getElementById('dialogueText');
-    const continueHint = document.getElementById('continueHint');
-    const choicesContainer = document.getElementById('choicesContainer');
-    const titleScreen = document.getElementById('titleScreen');
-    const startBtn = document.getElementById('startBtn');
-    const endingOverlay = document.getElementById('endingOverlay');
-    const endingIcon = document.getElementById('endingIcon');
-    const endingTitle = document.getElementById('endingTitle');
-    const endingDesc = document.getElementById('endingDesc');
-    const restartBtn = document.getElementById('restartBtn');
-    const scoreSpan = document.getElementById('score');
+const WORLD_W = 14000;
+const WORLD_H = 7500;
 
-    // ========== GAME STATE ==========
-    let score = 0;
-    let scene = 'title'; // 'title' | 'playing' | 'dialogue' | 'choice' | 'ending'
-    let currentDialogueIndex = 0;
-    let currentDialogueLines = [];
-    let typingTimer = null;
-    let typedLength = 0;
-    let isTyping = false;
-    let skipToEnd = false;
-    let choiceCallback = null;
-    let frame = 0;
 
-    // Character positions
-    let ali = { x: 50, y: 420, targetX: 50, targetY: 420, speed: 2, walking: false, frame: 0 };
-    let sara = { x: 250, y: 450, isSad: true };
+/* =====================================================
+   DOM REFERENCES
+===================================================== */
 
-    // Camera / scene objects
-    let trees = [];
-    let clouds = [];
-    let flowers = [];
-    let hearts = [];
-    let particles = [];
+const worldEl =
+  document.getElementById("world");
 
-    // ========== INIT SCENE ==========
-    function initScene() {
-        trees = [];
-        for (let i = 0; i < 4; i++) {
-            trees.push({
-                x: 40 + i * 100 + Math.random() * 30,
-                size: 40 + Math.random() * 30
-            });
-        }
-        clouds = [];
-        for (let i = 0; i < 3; i++) {
-            clouds.push({
-                x: Math.random() * 400,
-                y: 30 + Math.random() * 50,
-                speed: 0.2 + Math.random() * 0.3,
-                w: 60 + Math.random() * 40
-            });
-        }
-        flowers = [];
-        for (let i = 0; i < 10; i++) {
-            flowers.push({
-                x: 20 + Math.random() * 360,
-                y: 440 + Math.random() * 100,
-                color: ['#ff6b9d', '#ffd700', '#ff69b4', '#ffa07a', '#da70d6'][Math.floor(Math.random() * 5)],
-                size: 3 + Math.random() * 4
-            });
-        }
-    }
+const gameEl =
+  document.getElementById("game");
 
-    // ========== DRAWING FUNCTIONS ==========
-    function drawSky() {
-        const grad = ctx.createLinearGradient(0, 0, 0, 350);
-        grad.addColorStop(0, '#4fc3f7');
-        grad.addColorStop(0.5, '#81d4fa');
-        grad.addColorStop(1, '#b3e5fc');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, W, 260);
-    }
+const accessEl =
+  document.getElementById("access");
 
-    function drawSun() {
-        ctx.save();
-        const grd = ctx.createRadialGradient(340, 50, 10, 340, 50, 60);
-        grd.addColorStop(0, '#fff9c4');
-        grd.addColorStop(0.3, '#ffeb3b');
-        grd.addColorStop(1, 'rgba(255,235,59,0)');
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(340, 50, 60, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
+const missionEl =
+  document.getElementById("mission");
 
-    function drawClouds() {
-        clouds.forEach(c => {
-            ctx.fillStyle = 'rgba(255,255,255,0.85)';
-            ctx.beginPath();
-            ctx.ellipse(c.x, c.y, c.w / 2, 18, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(c.x - c.w * 0.3, c.y + 5, c.w * 0.35, 15, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(c.x + c.w * 0.3, c.y + 3, c.w * 0.3, 14, 0, 0, Math.PI * 2);
-            ctx.fill();
-            c.x += c.speed;
-            if (c.x > W + 80) c.x = -80;
-        });
-    }
 
-    function drawGround() {
-        const grad = ctx.createLinearGradient(0, 350, 0, H);
-        grad.addColorStop(0, '#4caf50');
-        grad.addColorStop(0.3, '#388e3c');
-        grad.addColorStop(0.7, '#2e7d32');
-        grad.addColorStop(1, '#1b5e20');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 350, W, H - 350);
+/* =====================================================
+   GAME VARIABLES
+===================================================== */
 
-        // Grass detail
-        ctx.strokeStyle = '#43a047';
-        ctx.lineWidth = 2;
-        for (let i = 0; i < 30; i++) {
-            const gx = Math.random() * W;
-            const gy = 355 + Math.random() * 220;
-            ctx.beginPath();
-            ctx.moveTo(gx, gy);
-            ctx.quadraticCurveTo(gx - 3, gy - 12, gx - 6, gy - 8);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(gx + 2, gy);
-            ctx.quadraticCurveTo(gx + 6, gy - 14, gx + 10, gy - 9);
-            ctx.stroke();
-        }
-    }
+let mission = 1;
 
-    function drawPath() {
-        ctx.fillStyle = '#8d6e63';
-        ctx.beginPath();
-        ctx.moveTo(0, 430);
-        ctx.quadraticCurveTo(100, 420, 200, 435);
-        ctx.quadraticCurveTo(300, 445, 400, 430);
-        ctx.lineTo(400, 440);
-        ctx.quadraticCurveTo(300, 455, 200, 445);
-        ctx.quadraticCurveTo(100, 432, 0, 440);
-        ctx.closePath();
-        ctx.fill();
-        
-        ctx.fillStyle = '#795548';
-        ctx.beginPath();
-        ctx.moveTo(0, 432);
-        ctx.quadraticCurveTo(100, 422, 200, 437);
-        ctx.quadraticCurveTo(300, 447, 400, 432);
-        ctx.lineWidth = 3;
-    }
+let player = {
+  x:900,
+  y:3200
+};
 
-    function drawTrees() {
-        trees.forEach(t => {
-            // Trunk
-            ctx.fillStyle = '#5d4037';
-            ctx.fillRect(t.x - 6, 370 - t.size * 0.5, 12, t.size * 0.5 + 20);
-            // Leaves
-            ctx.fillStyle = '#2e7d32';
-            ctx.beginPath();
-            ctx.arc(t.x, 360 - t.size * 0.5, t.size * 0.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#388e3c';
-            ctx.beginPath();
-            ctx.arc(t.x - 10, 355 - t.size * 0.5, t.size * 0.35, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(t.x + 12, 352 - t.size * 0.5, t.size * 0.35, 0, Math.PI * 2);
-            ctx.fill();
-        });
-    }
+let playerHP = 4000;
 
-    function drawBench() {
-        // Bench at sara's position
-        const bx = 240, by = 445;
-        ctx.fillStyle = '#5d4037';
-        ctx.fillRect(bx, by, 50, 8);
-        ctx.fillRect(bx, by + 8, 50, 4);
-        ctx.fillRect(bx, by + 12, 6, 20);
-        ctx.fillRect(bx + 44, by + 12, 6, 20);
-        ctx.fillStyle = '#4e342e';
-        ctx.fillRect(bx - 2, by - 4, 54, 4);
-    }
+let grenades = 40;
 
-    function drawFlowers() {
-        flowers.forEach(f => {
-            ctx.fillStyle = '#4caf50';
-            ctx.fillRect(f.x, f.y, 2, 12);
-            ctx.fillStyle = f.color;
-            ctx.beginPath();
-            ctx.arc(f.x, f.y - 2, f.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffeb3b';
-            ctx.beginPath();
-            ctx.arc(f.x, f.y - 2, f.size * 0.4, 0, Math.PI * 2);
-            ctx.fill();
-        });
-    }
+let saber = {
+  x:1050,
+  y:3200,
+  hp:1000,
+  el:null
+};
 
-    function drawCharacter(x, y, isAli, isSad, walkFrame) {
-        const scale = 1;
-        const baseY = y;
+let enemies = [];
 
-        if (isAli) {
-            // Body
-            ctx.fillStyle = '#1565c0';
-            ctx.fillRect(x - 10 * scale, baseY - 28 * scale, 20 * scale, 26 * scale);
-            // Head
-            ctx.fillStyle = '#ffcc80';
-            ctx.beginPath();
-            ctx.arc(x, baseY - 34 * scale, 10 * scale, 0, Math.PI * 2);
-            ctx.fill();
-            // Hair (black)
-            ctx.fillStyle = '#1a1a1a';
-            ctx.beginPath();
-            ctx.arc(x, baseY - 37 * scale, 10 * scale, Math.PI, 0);
-            ctx.fill();
-            // Eyes
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(x - 3 * scale, baseY - 33 * scale, 1.5 * scale, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(x + 3 * scale, baseY - 33 * scale, 1.5 * scale, 0, Math.PI * 2);
-            ctx.fill();
-            // Smile
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.arc(x, baseY - 29 * scale, 4 * scale, 0.1, Math.PI - 0.1);
-            ctx.stroke();
-            // Legs - walking animation
-            const legOffset = walkFrame ? Math.sin(walkFrame * 0.15) * 4 : 0;
-            ctx.fillStyle = '#37474f';
-            ctx.fillRect(x - 7 * scale, baseY - 2 * scale, 5 * scale, 14 * scale + legOffset);
-            ctx.fillRect(x + 2 * scale, baseY - 2 * scale, 5 * scale, 14 * scale - legOffset);
-            // Arms
-            ctx.strokeStyle = '#ffcc80';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(x - 10 * scale, baseY - 24 * scale);
-            ctx.lineTo(x - 16 * scale, baseY - 16 * scale);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x + 10 * scale, baseY - 24 * scale);
-            ctx.lineTo(x + 16 * scale, baseY - 16 * scale);
-            ctx.stroke();
-        } else {
-            // Sara - girl character
-            // Dress body
-            ctx.fillStyle = isSad ? '#ce93d8' : '#f48fb1';
-            ctx.fillRect(x - 10 * scale, baseY - 26 * scale, 20 * scale, 24 * scale);
-            // Dress triangle
-            ctx.beginPath();
-            ctx.moveTo(x - 12 * scale, baseY - 4 * scale);
-            ctx.lineTo(x, baseY + 10 * scale);
-            ctx.lineTo(x + 12 * scale, baseY - 4 * scale);
-            ctx.closePath();
-            ctx.fill();
-            // Head
-            ctx.fillStyle = '#ffcc80';
-            ctx.beginPath();
-            ctx.arc(x, baseY - 32 * scale, 10 * scale, 0, Math.PI * 2);
-            ctx.fill();
-            // Hair (long black)
-            ctx.fillStyle = '#1a1a1a';
-            ctx.beginPath();
-            ctx.arc(x, baseY - 35 * scale, 10 * scale, Math.PI, 0);
-            ctx.fill();
-            // Side hair
-            ctx.fillRect(x - 10 * scale, baseY - 34 * scale, 3 * scale, 12 * scale);
-            ctx.fillRect(x + 7 * scale, baseY - 34 * scale, 3 * scale, 12 * scale);
-            // Eyes
-            ctx.fillStyle = '#000';
-            if (isSad) {
-                // Sad eyes - half closed
-                ctx.fillRect(x - 4 * scale, baseY - 31 * scale, 2.5 * scale, 1 * scale);
-                ctx.fillRect(x + 1.5 * scale, baseY - 31 * scale, 2.5 * scale, 1 * scale);
-            } else {
-                ctx.beginPath();
-                ctx.arc(x - 3 * scale, baseY - 32 * scale, 1.5 * scale, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(x + 3 * scale, baseY - 32 * scale, 1.5 * scale, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            // Mouth
-            if (isSad) {
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.arc(x, baseY - 27 * scale, 3 * scale, Math.PI + 0.2, -0.2);
-                ctx.stroke();
-            } else {
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.arc(x, baseY - 28 * scale, 3 * scale, 0.1, Math.PI - 0.1);
-                ctx.stroke();
-            }
-        }
+let vehicles = [];
+
+let duel = false;
+
+let ended = false;
+
+let inVehicle = false;
+
+let currentVehicle = null;
+
+let gunIndex = 0;
+
+let ammo = 12;
+
+let reserve = 60;
+
+let lastShot = 0;
+
+let notificationTarget = {};
+
+let warnedEnemies = new Set();
+
+
+/* =====================================================
+   GUNS
+===================================================== */
+
+const guns = [
+
+  {
+    name:"PISTOL",
+    damage:35,
+    magazine:12,
+    reserve:60,
+    range:1200,
+    delay:350
+  },
+
+  {
+    name:"SMG",
+    damage:22,
+    magazine:30,
+    reserve:120,
+    range:1300,
+    delay:120
+  },
+
+  {
+    name:"RIFLE",
+    damage:55,
+    magazine:20,
+    reserve:80,
+    range:1800,
+    delay:250
+  },
+
+  {
+    name:"SHOTGUN",
+    damage:100,
+    magazine:6,
+    reserve:36,
+    range:650,
+    delay:650
+  },
+
+  {
+    name:"AK-47",
+    damage:48,
+    magazine:30,
+    reserve:150,
+    range:1600,
+    delay:170
+  },
+
+  {
+    name:"M4",
+    damage:45,
+    magazine:30,
+    reserve:150,
+    range:1800,
+    delay:140
+  },
+
+  {
+    name:"SNIPER",
+    damage:180,
+    magazine:5,
+    reserve:30,
+    range:3000,
+    delay:900
+  },
+
+  {
+    name:"MACHINE GUN",
+    damage:32,
+    magazine:50,
+    reserve:250,
+    range:1800,
+    delay:100
+  },
+
+  {
+    name:"DESERT EAGLE",
+    damage:95,
+    magazine:7,
+    reserve:42,
+    range:1200,
+    delay:500
+  },
+
+  {
+    name:"CARBINE",
+    damage:60,
+    magazine:25,
+    reserve:125,
+    range:1900,
+    delay:220
+  }
+
+];
+
+
+/* =====================================================
+   ENEMY NAMES
+===================================================== */
+
+const names = [
+
+  "Saber",
+  "Zain",
+  "Shayan",
+  "Hamza",
+  "Adnan",
+  "Fahad",
+  "Arslan",
+  "Daniyal",
+  "Ahmed",
+  "Imran",
+  "Hassan",
+  "Haris",
+  "Salman",
+  "Waqas",
+  "Rehan",
+  "Bilal",
+  "Kashif",
+  "Usman",
+  "Faizan",
+  "Aamir",
+  "Asif",
+  "Noman",
+  "Talha",
+  "Saad",
+  "Rayan",
+  "Ali",
+  "Owais",
+  "Shahzaib",
+  "Rizwan",
+  "Junaid",
+  "Ahsan",
+  "Sameer",
+  "Danish",
+  "Yasir",
+  "Kamran",
+  "Naveed",
+  "Irfan",
+  "Babar",
+  "Rashid",
+  "Salik"
+];
+
+
+/* =====================================================
+   ACCESS
+===================================================== */
+
+function checkCode(){
+
+  const input =
+    document
+      .getElementById("code")
+      .value
+      .trim();
+
+  const error =
+    document.getElementById("error");
+
+  if(input === ACCESS_CODE){
+
+    error.textContent = "";
+
+    document
+      .getElementById("payInfo")
+      .style.display = "none";
+
+    accessEl.style.display = "none";
+
+    mission = 1;
+
+    requestLandscape();
+
+    showMission();
+
+  }else{
+
+    error.textContent =
+      "❌ WRONG ACCESS CODE";
+
+    document
+      .getElementById("code")
+      .value = "";
+
+    document
+      .getElementById("code")
+      .focus();
+
+  }
+
+}
+
+
+/* =====================================================
+   LANDSCAPE
+===================================================== */
+
+async function requestLandscape(){
+
+  try{
+
+    if(document.documentElement.requestFullscreen){
+
+      await document
+        .documentElement
+        .requestFullscreen()
+        .catch(()=>{});
+
     }
 
-    function drawHearts() {
-        hearts.forEach((h, i) => {
-            h.y -= h.speed;
-            h.life -= 0.015;
-            h.scale += 0.01;
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, h.life);
-            ctx.font = `${16 * h.scale}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.fillText('❤️', h.x, h.y);
-            ctx.restore();
-        });
-        hearts = hearts.filter(h => h.life > 0);
+    if(
+      screen.orientation &&
+      screen.orientation.lock
+    ){
+
+      await screen.orientation
+        .lock("landscape")
+        .catch(()=>{});
+
     }
 
-    function spawnHearts(x, y, count = 8) {
-        for (let i = 0; i < count; i++) {
-            hearts.push({
-                x: x + (Math.random() - 0.5) * 30,
-                y: y + (Math.random() - 0.5) * 10,
-                speed: 0.8 + Math.random() * 1.2,
-                life: 1,
-                scale: 0.8 + Math.random() * 0.6
-            });
-        }
-    }
+  }catch(e){}
 
-    // ========== ANIMATION LOOP ==========
-    function gameLoop() {
-        frame++;
-        ctx.clearRect(0, 0, W, H);
+}
 
-        drawSky();
-        drawSun();
-        drawClouds();
-        drawGround();
-        drawPath();
-        drawTrees();
-        drawFlowers();
-        drawBench();
 
-        // Draw characters
-        if (scene !== 'title' && scene !== 'ending') {
-            drawCharacter(sara.x, sara.y, false, sara.isSad, 0);
-            drawCharacter(ali.x, ali.y, true, false, ali.walking ? frame : 0);
+/* =====================================================
+   MISSION
+===================================================== */
 
-            // If Ali is close to Sara
-            if (Math.abs(ali.x - sara.x) < 30 && Math.abs(ali.y - sara.y) < 20) {
-                drawHearts();
-            }
-        }
+function showMission(){
 
-        drawHearts();
+  missionEl.style.display = "flex";
 
-        requestAnimationFrame(gameLoop);
-    }
+  document
+    .getElementById("missionNumber")
+    .textContent = mission;
 
-    // ========== ALI MOVEMENT ==========
-    function moveAliTo(targetX, targetY, callback) {
-        ali.targetX = targetX;
-        ali.targetY = targetY;
-        ali.walking = true;
+}
 
-        const moveInterval = setInterval(() => {
-            let dx = ali.targetX - ali.x;
-            let dy = ali.targetY - ali.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < 3) {
-                ali.x = ali.targetX;
-                ali.y = ali.targetY;
-                ali.walking = false;
-                clearInterval(moveInterval);
-                if (callback) callback();
-                return;
-            }
+function startMission(){
 
-            ali.x += (dx / dist) * ali.speed;
-            ali.y += (dy / dist) * ali.speed;
-        }, 16);
-    }
+  missionEl.style.display = "none";
 
-    // ========== DIALOGUE SYSTEM ==========
-    function showDialogue(name, text, onDone) {
-        scene = 'dialogue';
-        dialogueBox.style.display = 'block';
-        choicesContainer.style.display = 'none';
-        speakerName.textContent = name;
-        dialogueText.textContent = '';
-        continueHint.style.display = 'block';
-        typedLength = 0;
-        isTyping = true;
-        skipToEnd = false;
+  gameEl.style.display = "block";
 
-        if (typingTimer) clearInterval(typingTimer);
-        
-        let idx = 0;
-        typingTimer = setInterval(() => {
-            if (skipToEnd) {
-                dialogueText.textContent = text;
-                clearInterval(typingTimer);
-                isTyping = false;
-                return;
-            }
-            if (idx < text.length) {
-                dialogueText.textContent += text[idx];
-                idx++;
-            } else {
-                clearInterval(typingTimer);
-                isTyping = false;
-            }
-        }, 25);
+  requestLandscape();
 
-        // Click to continue
-        const handler = () => {
-            if (isTyping) {
-                skipToEnd = true;
-                return;
-            }
-            dialogueBox.style.display = 'none';
-            dialogueBox.removeEventListener('click', handler);
-            if (onDone) onDone();
-        };
-        dialogueBox.addEventListener('click', handler);
-    }
+  setup();
 
-    function showChoices(choices, callback) {
-        scene = 'choice';
-        choicesContainer.style.display = 'flex';
-        dialogueBox.style.display = 'none';
+}
 
-        const btns = choicesContainer.querySelectorAll('.choice-btn');
-        choices.forEach((c, i) => {
-            if (i < btns.length) {
-                btns[i].textContent = c.text;
-                btns[i].className = 'choice-btn' + (c.type ? ' ' + c.type : '');
-                btns[i].style.display = 'block';
-                btns[i].onclick = () => {
-                    choicesContainer.style.display = 'none';
-                    if (callback) callback(i);
-                };
-            }
-        });
 
-        // Hide extra buttons
-        for (let i = choices.length; i < btns.length; i++) {
-            btns[i].style.display = 'none';
-        }
-    }
+/* =====================================================
+   SETUP
+===================================================== */
 
-    function addScore(pts) {
-        score += pts;
-        scoreSpan.textContent = score;
-    }
+function setup(){
 
-    function showEnding(icon, title, desc) {
-        scene = 'ending';
-        endingOverlay.style.display = 'flex';
-        endingIcon.textContent = icon;
-        endingTitle.textContent = title;
-        endingDesc.textContent = desc;
-        dialogueBox.style.display = 'none';
-        choicesContainer.style.display = 'none';
-    }
+  worldEl.innerHTML = "";
 
-    // ========== STORY ENGINE ==========
-    function startGame() {
-        titleScreen.style.display = 'none';
-        endingOverlay.style.display = 'none';
-        score = 0;
-        scoreSpan.textContent = '0';
-        ali.x = 30;
-        ali.y = 430;
-        sara.x = 250;
-        sara.y = 445;
-        sara.isSad = true;
-        hearts = [];
+  document
+    .getElementById("mapArea")
+    .querySelectorAll(
+      ".vehicleDot,.enemyDot"
+    )
+    .forEach(x=>x.remove());
 
-        // Fade in
-        setTimeout(() => {
-            runScene1();
-        }, 500);
-    }
+  enemies = [];
 
-    // ---- SCENE 1: Ali enters park ----
-    function runScene1() {
-        showDialogue('علی', 'کیا خوبصورت پارک ہے آج۔', () => {
-            showDialogue('علی', 'ارے! وہ سارہ ہے... اتنی اداس کیوں بیٹھی ہے؟', () => {
-                showDialogue('علی', 'مجھے اس کے پاس جانا چاہیے، لیکن کیسے بات کروں؟', () => {
-                    moveAliTo(140, 430, () => {
-                        showDialogue('علی', 'اس کا چہرہ دیکھ کر دل بھر آیا۔ مجھے کچھ کرنا چاہیے!', () => {
-                            // CHOICE 1
-                            showChoices([
-                                { text: '💬 سارہ کے پاس جا کر بات کروں', type: 'good' },
-                                { text: '🌸 ایک پھول دے کر مسکراؤں', type: 'good' },
-                                { text: '👋 کوئی بات نہیں، چلا جاؤں', type: 'bad' }
-                            ], (choice) => {
-                                if (choice === 0) {
-                                    // Talk
-                                    addScore(10);
-                                    runScene2_Talk();
-                                } else if (choice === 1) {
-                                    // Flower
-                                    addScore(10);
-                                    runScene2_Flower();
-                                } else {
-                                    // Ignore - BAD
-                                    runSceneBad_Ignore();
-                                }
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    }
+  vehicles = [];
 
-    // ---- SCENE 2A: TALK ----
-    function runScene2_Talk() {
-        moveAliTo(220, 440, () => {
-            showDialogue('علی', 'ہیلو سارہ! کیا آپ ٹھیک ہیں؟', () => {
-                showDialogue('سارہ', '(حیران ہو کر) اوہ! علی تم... میں ٹھیک نہیں ہوں، بس کچھ پریشانی ہے۔', () => {
-                    showDialogue('علی', 'اگر آپ چاہیں تو میں آپ کی بات سن سکتا ہوں۔ کبھی کبھی دل کی باتیں بانٹنے سے سکون ملتا ہے۔', () => {
-                        showDialogue('سارہ', '(آنکھوں میں آنسو) سچ میں؟ تم واقعی سنو گے؟', () => {
-                            showDialogue('علی', 'ہاں، آپ بلا جھجھک کہہ سکتی ہیں۔', () => {
-                                // CHOICE 2
-                                showChoices([
-                                    { text: '💞 غور سے سنوں اور سمجھوں', type: 'good' },
-                                    { text: '😤 اسے کہوں کہ مسئلہ چھوٹا ہے', type: 'bad' },
-                                    { text: '📱 فون نکال کر دیکھنے لگوں', type: 'bad' }
-                                ], (choice) => {
-                                    if (choice === 0) {
-                                        addScore(20);
-                                        runScene3_Talk_Good();
-                                    } else if (choice === 1) {
-                                        runScene3_Talk_Mean();
-                                    } else {
-                                        runScene3_Talk_Phone();
-                                    }
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    }
+  duel = false;
 
-    // ---- SCENE 2B: FLOWER ----
-    function runScene2_Flower() {
-        // Ali picks a flower
-        showDialogue('علی', 'ہاں! میں اسے ایک پھول دوں گا۔ پھول ہمیشہ چہرے پر مسکراہٹ لاتے ہیں۔', () => {
-            moveAliTo(180, 470, () => {
-                // Pick flower
-                showDialogue('علی', 'یہ سب سے خوبصورت پھول ہے۔', () => {
-                    moveAliTo(230, 442, () => {
-                        showDialogue('علی', 'سارہ! یہ آپ کے لیے۔ آپ کا چہرہ اس پھول سے بھی زیادہ خوبصورت ہے۔', () => {
-                            showDialogue('سارہ', '(آنکھیں چمک اٹھیں) واہ! یہ پھول بہت خوبصورت ہے۔ شکریہ علی!', () => {
-                                sara.isSad = false;
-                                spawnHearts(sara.x, sara.y - 30, 15);
-                                showDialogue('علی', 'آپ کی مسکراہٹ دیکھ کر مجھے بہت خوشی ہوئی۔', () => {
-                                    // CHOICE
-                                    showChoices([
-                                        { text: '🌷 پھول دے کر اس کا ہاتھ تھام لوں', type: 'good' },
-                                        { text: '😐 چپ چاپ وہاں سے چلا جاؤں', type: 'bad' }
-                                    ], (choice) => {
-                                        if (choice === 0) {
-                                            addScore(20);
-                                            runScene3_Flower_Good();
-                                        } else {
-                                            runScene3_Flower_Silent();
-                                        }
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    }
+  ended = false;
 
-    // ---- SCENE 3: GOOD ENDINGS ----
+  inVehicle = false;
 
-    function runScene3_Talk_Good() {
-        showDialogue('علی', 'میں تمہاری ہر بات سنوں گا سارہ۔ تمہارے دکھ میرے دکھ ہیں۔', () => {
-            showDialogue('سارہ', 'علی... تم واقعی بہت اچھے ہو۔ تم سے بات کر کے مجھے بہت سکون ملا۔ تم میرے اچھے دوست ہو۔', () => {
-                showDialogue('علی', 'اور تم میری سب سے خاص دوست ہو سارہ۔', () => {
-                    spawnHearts(200, 380, 25);
-                    showDialogue('سارہ', 'کیا تم کل بھی آؤ گے؟', () => {
-                        showDialogue('علی', 'ہاں، ہر روز آؤں گا۔ تمہیں کبھی اکیلا نہیں چھوڑوں گا۔', () => {
-                            showDialogue('سارہ', 'شکریہ علی... تمہاری دوستی مجھے بہت عزیز ہے۔', () => {
-                                spawnHearts(200, 380, 20);
-                                showEnding('💞', 'دوستی سے محبت تک', 
-                                    'علی نے سارہ کو سمجھا، اس کی باتیں سنی، اور اس کا دکھ بانٹا۔\n' +
-                                    'دونوں کی دوستی گہری ہوتی گئی اور پھر یہ دوستی محبت میں بدل گئی۔\n' +
-                                    'علی اور سارہ آج بھی ساتھ ہیں اور کبھی جدا نہیں ہوں گے۔ ❤️\n\n' +
-                                    '🍀 صحیح فیصلہ: دوسروں کو سمجھنا اور سننا ہی اصل محبت ہے۔');
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    }
+  currentVehicle = null;
 
-    function runScene3_Flower_Good() {
-        showDialogue('علی', 'سارہ، تم جانتے ہو... تمہاری مسکراہٹ مجھے پوری دنیا سے زیادہ پیاری ہے۔', () => {
-            sara.isSad = false;
-            showDialogue('سارہ', '(شرماتے ہوئے) علی... تم بہت اچھے ہو۔ اس پھول نے میرا پورا دن بنا دیا۔', () => {
-                showDialogue('علی', 'یہ صرف پھول نہیں، یہ میری محبت کا پیغام ہے۔', () => {
-                    spawnHearts(200, 370, 30);
-                    showDialogue('سارہ', 'علی... میں بھی تمہیں پسند کرتی ہوں۔ بہت زیادہ۔', () => {
-                        showEnding('🌹', 'محبت کا پھول کھلا', 
-                            'علی نے ایک چھوٹے سے پھول سے سارہ کا دل جیت لیا۔\n' +
-                            'ایک مسکراہٹ، ایک پھول، اور پھر دونوں کی محبت ہمیشہ کے لیے۔\n' +
-                            'علی اور سارہ آج بھی اسی پارک میں ملتے ہیں، اور محبت کا یہ پھول کبھی مرجھایا نہیں۔ 🌷\n\n' +
-                            '🍀 صحیح فیصلہ: محبت کا اظہار چھوٹی چھوٹی چیزوں سے ہوتا ہے۔');
-                    });
-                });
-            });
-        });
-    }
+  warnedEnemies.clear();
 
-    // ---- SCENE 3: BAD ENDINGS ----
+  playerHP = 4000;
 
-    function runSceneBad_Ignore() {
-        showDialogue('علی', 'شاید وہ اکیلی رہنا چاہتی ہے۔', () => {
-            showDialogue('سارہ', '(اداسی سے) کوئی نہیں آیا... کوئی نہیں پوچھتا...', () => {
-                moveAliTo(10, 430, () => {
-                    showDialogue('راوی', 'علی چلا گیا اور سارہ پھر سے اکیلی رہ گئی۔', () => {
-                        showDialogue('راوی', 'اگر علی تھوڑی سی ہمت کرتا تو شاید آج کچھ اور ہوتا۔', () => {
-                            showEnding('💔', 'موقع ہاتھ سے نکل گیا', 
-                                'علی نے سارہ کو اکیلا چھوڑ دیا۔\n' +
-                                'کبھی کبھی زندگی میں ایک قدم آگے بڑھانا ہی کافی ہوتا ہے۔\n' +
-                                'لیکن علی نے وہ قدم نہ اٹھایا اور موقع ہاتھ سے نکل گیا۔\n\n' +
-                                '❌ غلط فیصلہ: موقع ملنے پر خاموش رہنا سب سے بڑا نقصان ہے۔');
-                        });
-                    });
-                });
-            });
-        });
-    }
+  grenades = 40;
 
-    function runScene3_Talk_Mean() {
-        showDialogue('علی', 'یہ کوئی بڑی بات نہیں سارہ، تم بناوجہ پریشان ہو رہی ہو۔', () => {
-            showDialogue('سارہ', '(تھوڑی ناراض) تم نہیں سمجھ سکتے... تمہیں فرق نہیں پڑتا۔', () => {
-                showDialogue('علی', 'ارے یار، میں تو تمہاری مدد کر رہا تھا۔', () => {
-                    showDialogue('سارہ', 'نہیں علی، تم نے میری بات نہیں سنی۔ تم نے مجھے سمجھنے کی کوشش نہیں کی۔', () => {
-                        showDialogue('راوی', 'علی سمجھ نہیں سکا کہ کبھی کبھی صرف سننا کافی ہوتا ہے۔', () => {
-                            showEnding('😔', 'دوریاں بڑھ گئیں', 
-                                'علی نے سارہ کے جذبات کو سمجھنے کی بجائے انہیں چھوٹا کہہ دیا۔\n' +
-                                'سارہ کو لگا کہ کوئی اسے سمجھنا http://localhost:7700/index.html چاہتا۔\n' +
-                                'دونوں کے درمیان فاصلہ بڑھ گیا اور وہ کبھی قریب نہ آ سکے۔\n\n' +
-                                '❌ غلط فیصلہ: کسی کے جذبات کو چھوٹا سمجھنا رشتوں کو توڑ دیتا ہے۔');
-                        });
-                    });
-                });
-            });
-        });
-    }
+  player.x = 900;
 
-    function runScene3_Talk_Phone() {
-        showDialogue('علی', 'ہاں ہاں، میں سن رہا ہوں... (فون دیکھتے ہوئے) ایک منٹ...', () => {
-            showDialogue('سارہ', '(اداسی سے) تم تو مجھے سن ہی نہیں رہے علی۔ تمہیں فرق نہیں پڑتا۔', () => {
-                showDialogue('علی', 'نہیں نہیں، میں سن رہا ہوں بولتی رہو۔', () => {
-                    showDialogue('سارہ', 'بس کافی ہے علی۔ تم جاؤ اپنے فون کے ساتھ۔ مجھے تنہا رہنے دو۔', () => {
-                        showDialogue('راوی', 'علی کو سمجھ نہیں آیا کہ توجہ دینا سب سے بڑا تحفہ ہے۔', () => {
-                            showEnding('📱', 'توجہ نہ دینے کا انجام', 
-                                'علی فون میں مصروف رہا اور سارہ کی باتیں نہ سن سکا۔\n' +
-                                'سارہ کو لگا کہ وہ اس کے لیے اہم نہیں ہے۔\n' +
-                                'کبھی کبھی فون سے زیادہ اہم لوگ ہوتے ہیں جو ہمارے سامنے بیٹھے ہوتے ہیں۔\n\n' +
-                                '❌ غلط فیصلہ: جب کوئی آپ سے بات کرے تو اسے پوری توجہ دیں۔');
-                        });
-                    });
-                });
-            });
-        });
-    }
+  player.y = 3200;
 
-    function runScene3_Flower_Silent() {
-        showDialogue('علی', 'خوش رہو سارہ۔ (چپ چاپ وہاں سے چل دیتا ہے)', () => {
-            showDialogue('سارہ', 'علی... رکو! تم کہاں جا رہے ہو؟', () => {
-                showDialogue('علی', '(مڑ کر دیکھتا ہے لیکن چلا جاتا ہے)', () => {
-                    showDialogue('سارہ', 'وہ چلا گیا... پھول دے کر چلا گیا۔ شاید وہ مجھے پسند نہیں کرتا۔', () => {
-                        showDialogue('راوی', 'علی نے پھول تو دیا لیکن اپنے جذبات کا اظہار نہ کر سکا۔', () => {
-                            showEnding('🥀', 'ادھوری محبت', 
-                                'علی نے سارہ کو پھول دیا لیکن اپنے دل کی بات نہ کہہ سکا۔\n' +
-                                'وہ خاموشی سے چلا گیا اور سارہ سمجھی کہ اسے کوئی دلچسپی نہیں۔\n' +
-                                'کبھی کبھی خاموشی سب سے بڑی غلط فہمی کا سبب بنتی ہے۔\n\n' +
-                                '❌ غلط فیصلہ: اپنے جذبات کا اظہار کرنا ضروری ہے، ورنہ دوسرے کیا سمجھیں گے؟');
-                        });
-                    });
-                });
-            });
-        });
-    }
+  saber.x = 1050;
 
-    // ========== EVENT HANDLERS ==========
-    startBtn.addEventListener('click', startGame);
-    restartBtn.addEventListener('click', () => {
-        endingOverlay.style.display = 'none';
-        startGame();
+  saber.y = 3200;
+
+  saber.hp = 1000;
+
+  gunIndex = 0;
+
+  ammo =
+    guns[0].magazine;
+
+  reserve =
+    guns[0].reserve;
+
+  createWorld();
+
+  createHouses();
+
+  createVehicles();
+
+  createPlayer();
+
+  createSaber();
+
+  createEnemies();
+
+  update();
+
+}
+
+
+/* =====================================================
+   WORLD
+===================================================== */
+
+function createWorld(){
+
+  [1100,3100,5100,6900]
+  .forEach(y=>{
+
+    const road =
+      document.createElement("div");
+
+    road.className = "roadH";
+
+    road.style.top = y+"px";
+
+    worldEl.appendChild(road);
+
+
+    const line =
+      document.createElement("div");
+
+    line.className = "lineH";
+
+    line.style.top =
+      (y+102)+"px";
+
+    worldEl.appendChild(line);
+
+  });
+
+
+  [2300,6000,9000,12000]
+  .forEach(x=>{
+
+    const road =
+      document.createElement("div");
+
+    road.className = "roadV";
+
+    road.style.left = x+"px";
+
+    worldEl.appendChild(road);
+
+
+    const line =
+      document.createElement("div");
+
+    line.className = "lineV";
+
+    line.style.left =
+      (x+102)+"px";
+
+    worldEl.appendChild(line);
+
+  });
+
+
+  for(let i=0;i<250;i++){
+
+    const tree =
+      document.createElement("div");
+
+    tree.className = "tree";
+
+    tree.textContent =
+      i%2===0 ? "🌳" : "🌲";
+
+    tree.style.left =
+      Math.random()*13600+"px";
+
+    tree.style.top =
+      Math.random()*7200+"px";
+
+    worldEl.appendChild(tree);
+
+  }
+
+}
+
+
+/* =====================================================
+   HOUSES
+===================================================== */
+
+function createHouses(){
+
+  const pos = [
+
+    [300,450],
+    [800,1500],
+    [1400,600],
+    [1850,4300],
+    [2700,600],
+    [3300,1700],
+    [3900,4400],
+    [4600,900],
+    [5100,3000],
+    [5800,5800],
+    [6500,1400],
+    [7100,4000],
+    [7900,600],
+    [8400,2500],
+    [9100,4700],
+    [9700,1000],
+    [10400,3900],
+    [11200,1500],
+    [12000,4700],
+    [12900,2800],
+    [13200,5900],
+    [2500,6000],
+    [4300,6500],
+    [7600,6400]
+
+  ];
+
+
+  pos.forEach(p=>{
+
+    const h =
+      document.createElement("div");
+
+    h.className = "house";
+
+    h.style.left =
+      p[0]+"px";
+
+    h.style.top =
+      p[1]+"px";
+
+    h.innerHTML = `
+
+      <div class="roof"></div>
+
+      <div class="door"></div>
+
+      <div class="window wl"></div>
+
+      <div class="window wr"></div>
+
+    `;
+
+    worldEl.appendChild(h);
+
+  });
+
+}
+
+
+/* =====================================================
+   VEHICLES
+===================================================== */
+
+function createVehicles(){
+
+  const rides = [
+
+    [600,1010,"🚗"],
+    [1350,3250,"🏍️"],
+    [2150,1050,"🚙"],
+    [3000,3250,"🏇"],
+    [3750,1030,"🚓"],
+
+    [4500,5100,"🏍️"],
+    [5300,3250,"🚐"],
+    [6150,1120,"🏇"],
+    [6950,5100,"🚗"],
+    [7750,3250,"🏍️"],
+
+    [8500,1040,"🚙"],
+    [9250,5100,"🏇"],
+    [9950,3250,"🚓"],
+    [10750,1050,"🏍️"],
+    [11450,5100,"🚗"],
+
+    [12250,3250,"🚐"],
+    [12800,1050,"🏇"],
+    [3400,6450,"🏍️"],
+    [6750,6500,"🚙"],
+    [10600,6450,"🚗"]
+
+  ];
+
+
+  rides.forEach((r,i)=>{
+
+    const el =
+      document.createElement("div");
+
+    el.className = "ride";
+
+    el.style.left =
+      r[0]+"px";
+
+    el.style.top =
+      r[1]+"px";
+
+    el.innerHTML = `
+
+      <div class="vehicleGun"></div>
+
+      <div class="rideEmoji">
+        ${r[2]}
+      </div>
+
+      <div class="rideLabel">
+        RIDE ${i+1}
+      </div>
+
+    `;
+
+    worldEl.appendChild(el);
+
+
+    const dot =
+      document.createElement("div");
+
+    dot.className =
+      "dot vehicleDot";
+
+    dot.style.left =
+      r[0]/WORLD_W*100+"%";
+
+    dot.style.top =
+      r[1]/WORLD_H*100+"%";
+
+    document
+      .getElementById("mapArea")
+      .appendChild(dot);
+
+
+    vehicles.push({
+
+      x:r[0],
+      y:r[1],
+
+      el:el,
+      dot:dot,
+
+      emoji:r[2]
+
     });
 
-    // Touch handling for canvas (not needed for this game)
-    canvas.addEventListener('touchstart', (e) => e.preventDefault());
-    
-    // ========== INIT ==========
-    initScene();
-    gameLoop();
+  });
 
-    console.log('🌸 علی اور سارہ کی کہانی - Spck Editor میں چلانے کے لیے تیار!');
-    console.log('صحیح فیصلے کریں اور کہانی کو کامیاب بنائیں!');
+}
+
+
+/* =====================================================
+   PLAYER
+===================================================== */
+
+function createPlayer(){
+
+  const p =
+    document.createElement("div");
+
+  p.id = "player";
+
+  p.className =
+    "character player";
+
+  p.innerHTML = `
+
+    <div class="name">
+      Muhammad Rashid
+    </div>
+
+    <div class="healthSmall">
+      <div id="playerLocal"></div>
+    </div>
+
+    <div class="hair"></div>
+
+    <div class="head"></div>
+
+    <div class="eye eye1"></div>
+
+    <div class="eye eye2"></div>
+
+    <div class="arm arm1"></div>
+
+    <div class="arm arm2"></div>
+
+    <div class="body"></div>
+
+    <div class="leg leg1"></div>
+
+    <div class="leg leg2"></div>
+
+    <div class="gun"></div>
+
+  `;
+
+  worldEl.appendChild(p);
+
+}
+
+
+/* =====================================================
+   SABER
+===================================================== */
+
+function createSaber(){
+
+  const s =
+    document.createElement("div");
+
+  s.id = "saber";
+
+  s.className =
+    "character saber";
+
+  s.innerHTML = `
+
+    <div
+      class="name"
+      style="background:#075d2b">
+
+      Muhammad Saber — AUTO
+
+    </div>
+
+    <div class="healthSmall">
+      <div id="saberLocal"></div>
+    </div>
+
+    <div class="hair"></div>
+
+    <div class="head"></div>
+
+    <div class="eye eye1"></div>
+
+    <div class="eye eye2"></div>
+
+    <div class="arm arm1"></div>
+
+    <div class="arm arm2"></div>
+
+    <div class="body"></div>
+
+    <div class="leg leg1"></div>
+
+    <div class="leg leg2"></div>
+
+    <div class="gun"></div>
+
+  `;
+
+  worldEl.appendChild(s);
+
+  saber.el = s;
+
+}
+
+
+/* =====================================================
+   ENEMIES
+   Mission 1 = 20
+   Every next mission +10
+===================================================== */
+
+function createEnemies(){
+
+  const enemyTotal =
+    20 + ((mission-1)*10);
+
+
+  for(let i=0;i<enemyTotal;i++){
+
+    const e = {
+
+      name:
+        names[i % names.length] +
+        (i >= names.length
+          ? " "+(Math.floor(i/names.length)+1)
+          : ""),
+
+      x:
+        1500+
+        Math.random()*12000,
+
+      y:
+        400+
+        Math.random()*6800,
+
+      hp:300,
+
+      alive:true,
+
+      last:0,
+
+      warned:false,
+
+      el:null,
+
+      dot:null
+
+    };
+
+
+    const el =
+      document.createElement("div");
+
+    el.className =
+      "character enemy";
+
+    el.innerHTML = `
+
+      <div class="name">
+        ${e.name}
+      </div>
+
+      <div class="healthSmall">
+        <div class="enemyLocal"></div>
+      </div>
+
+      <div class="hair"></div>
+
+      <div class="head"></div>
+
+      <div class="eye eye1"></div>
+
+      <div class="eye eye2"></div>
+
+      <div class="arm arm1"></div>
+
+      <div class="arm arm2"></div>
+
+      <div class="body"></div>
+
+      <div class="leg leg1"></div>
+
+      <div class="leg leg2"></div>
+
+      <div class="gun"></div>
+
+    `;
+
+    worldEl.appendChild(el);
+
+    e.el = el;
+
+    enemies.push(e);
+
+
+    const dot =
+      document.createElement("div");
+
+    dot.className =
+      "dot enemyDot";
+
+    document
+      .getElementById("mapArea")
+      .appendChild(dot);
+
+    e.dot = dot;
+
+  }
+
+}
+
+
+/* =====================================================
+   DISTANCE
+===================================================== */
+
+function dist(a,b){
+
+  return Math.sqrt(
+
+    (a.x-b.x)**2 +
+
+    (a.y-b.y)**2
+
+  );
+
+}
+
+
+/* =====================================================
+   MOVEMENT
+===================================================== */
+
+function movePlayer(dx,dy){
+
+  if(ended)return;
+
+
+  const speed =
+    inVehicle ? 115 : 32;
+
+
+  player.x += dx*speed;
+
+  player.y += dy*speed;
+
+
+  player.x =
+    Math.max(
+      40,
+      Math.min(
+        WORLD_W-100,
+        player.x
+      )
+    );
+
+
+  player.y =
+    Math.max(
+      40,
+      Math.min(
+        WORLD_H-100,
+        player.y
+      )
+    );
+
+
+  if(
+    inVehicle &&
+    currentVehicle
+  ){
+
+    currentVehicle.x =
+      player.x-47;
+
+    currentVehicle.y =
+      player.y-8;
+
+    currentVehicle.el.style.left =
+      currentVehicle.x+"px";
+
+    currentVehicle.el.style.top =
+      currentVehicle.y+"px";
+
+  }
+
+
+  if(!inVehicle){
+
+    const el =
+      document.getElementById("player");
+
+    if(el){
+
+      el.classList.add("walk");
+
+      clearTimeout(window.walk);
+
+      window.walk =
+        setTimeout(()=>{
+
+          el.classList.remove("walk");
+
+        },250);
+
+    }
+
+  }
+
+
+  update();
+
+}
+
+
+/* =====================================================
+   VEHICLE
+===================================================== */
+
+function toggleVehicle(){
+
+  if(ended)return;
+
+
+  /* EXIT */
+
+  if(inVehicle){
+
+    if(!currentVehicle)return;
+
+
+    player.x =
+      currentVehicle.x+100;
+
+    player.y =
+      currentVehicle.y+50;
+
+
+    const playerEl =
+      document.getElementById("player");
+
+    /*
+      Show original Muhammad Rashid.
+    */
+
+    playerEl.style.display =
+      "block";
+
+
+    currentVehicle.el
+      .classList.remove(
+        "playerVehicle"
+      );
+
+
+    const rider =
+      currentVehicle.el
+        .querySelector(
+          ".driverInVehicle"
+        );
+
+    if(rider){
+
+      rider.remove();
+
+    }
+
+
+    inVehicle = false;
+
+    currentVehicle = null;
+
+
+    document
+      .getElementById("vehicleBtn")
+      .innerHTML =
+      "🚗<br>ENTER";
+
+
+    document
+      .getElementById("vehicleStatus")
+      .textContent =
+      "ON FOOT";
+
+
+    notice(
+      "🚶 گاڑی سے باہر آ گئے ہیں"
+    );
+
+
+    update();
+
+    return;
+
+  }
+
+
+  /* FIND VEHICLE */
+
+  let nearest = null;
+
+  let best = Infinity;
+
+
+  vehicles.forEach(v=>{
+
+    const d =
+      Math.sqrt(
+
+        (player.x-v.x)**2 +
+
+        (player.y-v.y)**2
+
+      );
+
+
+    if(d<best){
+
+      best=d;
+
+      nearest=v;
+
+    }
+
+  });
+
+
+  if(
+    nearest &&
+    best<=230
+  ){
+
+    currentVehicle =
+      nearest;
+
+    inVehicle = true;
+
+
+    player.x =
+      nearest.x+47;
+
+    player.y =
+      nearest.y+8;
+
+
+    /*
+      IMPORTANT:
+      Hide original character so
+      only ONE character is visible.
+    */
+
+    const playerEl =
+      document.getElementById("player");
+
+    playerEl.style.display =
+      "none";
+
+
+    nearest.el
+      .classList.add(
+        "playerVehicle"
+      );
+
+
+    const oldRider =
+      nearest.el
+        .querySelector(
+          ".driverInVehicle"
+        );
+
+    if(oldRider){
+
+      oldRider.remove();
+
+    }
+
+
+    /*
+      Create ONLY ONE vehicle rider.
+    */
+
+    const rider =
+      document.createElement("div");
+
+    rider.className =
+      "driverInVehicle";
+
+
+    rider.innerHTML = `
+
+      <div class="vehicleName">
+        Muhammad Rashid
+      </div>
+
+      <div class="hair"></div>
+
+      <div class="head"></div>
+
+      <div class="eye eye1"></div>
+
+      <div class="eye eye2"></div>
+
+      <div class="body"></div>
+
+      <div class="arm arm1"></div>
+
+      <div class="arm arm2"></div>
+
+      <div class="gun"></div>
+
+    `;
+
+
+    nearest.el.appendChild(rider);
+
+
+    document
+      .getElementById("vehicleBtn")
+      .innerHTML =
+      "🚗<br>EXIT";
+
+
+    document
+      .getElementById("vehicleStatus")
+      .textContent =
+      "IN VEHICLE";
+
+
+    notice(
+      "🚗 Muhammad Rashid گاڑی میں بیٹھ گیا"
+    );
+
+
+    update();
+
+  }else{
+
+    notice(
+      "🚗 گاڑی کے قریب جائیں"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   MUZZLE POSITION
+===================================================== */
+
+function getPlayerMuzzle(){
+
+  if(inVehicle && currentVehicle){
+
+    /*
+      Rider gun is around vehicle's
+      left/top position.
+      Bullet starts directly from gun muzzle.
+    */
+
+    return {
+
+      x:
+        currentVehicle.x + 47 + 26 + 34,
+
+      y:
+        currentVehicle.y + 8 + 31 + 3
+
+    };
+
+  }
+
+
+  /*
+    Pedestrian gun muzzle.
+  */
+
+  return {
+
+    x:
+      player.x + 26 + 34,
+
+    y:
+      player.y + 31 + 3
+
+  };
+
+}
+
+
+/* =====================================================
+   BULLET EFFECT
+===================================================== */
+
+function bulletEffect(start,target){
+
+  const dx =
+    target.x-start.x;
+
+  const dy =
+    target.y-start.y;
+
+  const length =
+    Math.sqrt(
+      dx*dx+
+      dy*dy
+    );
+
+  const angle =
+    Math.atan2(
+      dy,
+      dx
+    );
+
+
+  /*
+    Flash appears EXACTLY
+    where the bullet leaves gun.
+  */
+
+  const flash =
+    document.createElement("div");
+
+  flash.className =
+    "flash";
+
+  flash.style.left =
+    (start.x-8)+"px";
+
+  flash.style.top =
+    (start.y-10)+"px";
+
+  worldEl.appendChild(flash);
+
+
+  /*
+    Bullet starts at muzzle.
+  */
+
+  const bullet =
+    document.createElement("div");
+
+  bullet.className =
+    "bullet";
+
+  bullet.style.left =
+    start.x+"px";
+
+  bullet.style.top =
+    start.y+"px";
+
+  bullet.style.width =
+    Math.min(
+      Math.max(length,20),
+      1800
+    )+"px";
+
+  bullet.style.transform =
+    `rotate(${angle}rad)`;
+
+
+  worldEl.appendChild(bullet);
+
+
+  /*
+    Small projectile moving forward.
+  */
+
+  const projectile =
+    document.createElement("div");
+
+  projectile.style.position =
+    "absolute";
+
+  projectile.style.width =
+    "12px";
+
+  projectile.style.height =
+    "5px";
+
+  projectile.style.borderRadius =
+    "50%";
+
+  projectile.style.background =
+    "#fff7a0";
+
+  projectile.style.boxShadow =
+    "0 0 8px #fff,0 0 15px orange";
+
+  projectile.style.left =
+    start.x+"px";
+
+  projectile.style.top =
+    (start.y-2)+"px";
+
+  projectile.style.zIndex =
+    "5100";
+
+  projectile.style.transform =
+    `rotate(${angle}rad)`;
+
+  worldEl.appendChild(projectile);
+
+
+  requestAnimationFrame(()=>{
+
+    projectile.style.transition =
+      "left .10s linear, top .10s linear";
+
+    projectile.style.left =
+      target.x+"px";
+
+    projectile.style.top =
+      target.y+"px";
+
+  });
+
+
+  setTimeout(()=>{
+
+    bullet.remove();
+
+    flash.remove();
+
+    projectile.remove();
+
+  },160);
+
+}
+
+
+/* =====================================================
+   PLAYER FIRE
+===================================================== */
+
+function firePlayer(){
+
+  if(ended)return;
+
+
+  if(inVehicle){
+
+    fireVehicle();
+
+    return;
+
+  }
+
+
+  const gun =
+    guns[gunIndex];
+
+  const now =
+    Date.now();
+
+
+  if(
+    now-lastShot<
+    gun.delay
+  ){
+
+    return;
+
+  }
+
+
+  if(ammo<=0){
+
+    notice(
+      "🔃 RELOAD REQUIRED"
+    );
+
+    return;
+
+  }
+
+
+  lastShot =
+    now;
+
+  ammo--;
+
+
+  let target = null;
+
+  let best = Infinity;
+
+
+  if(duel){
+
+    const d =
+      dist(
+        player,
+        saber
+      );
+
+    if(d<=gun.range){
+
+      target = saber;
+
+      best = d;
+
+    }
+
+  }else{
+
+    enemies.forEach(e=>{
+
+      if(!e.alive)return;
+
+      const d =
+        dist(
+          player,
+          e
+        );
+
+      if(
+        d<best &&
+        d<=gun.range
+      ){
+
+        best=d;
+
+        target=e;
+
+      }
+
+    });
+
+  }
+
+
+  const muzzle =
+    getPlayerMuzzle();
+
+
+  if(target){
+
+    bulletEffect(
+      muzzle,
+      {
+        x:target.x+20,
+        y:target.y+30
+      }
+    );
+
+
+    if(target===saber){
+
+      damageSaber(
+        gun.damage
+      );
+
+    }else{
+
+      damageEnemy(
+        target,
+        gun.damage
+      );
+
+    }
+
+  }else{
+
+    /*
+      If no enemy target,
+      show bullet forward from muzzle.
+    */
+
+    bulletEffect(
+      muzzle,
+      {
+        x:muzzle.x+
+          Math.cos(0)*
+          gun.range,
+
+        y:muzzle.y
+      }
+    );
+
+  }
+
+
+  update();
+
+}
+
+
+/* =====================================================
+   VEHICLE FIRE
+===================================================== */
+
+function fireVehicle(){
+
+  if(!inVehicle)return;
+
+
+  const now =
+    Date.now();
+
+
+  if(
+    now-lastShot<
+    150
+  ){
+
+    return;
+
+  }
+
+
+  lastShot =
+    now;
+
+
+  let target = null;
+
+  let best = Infinity;
+
+
+  if(duel){
+
+    const d =
+      dist(
+        player,
+        saber
+      );
+
+    if(d<=1800){
+
+      target=saber;
+
+      best=d;
+
+    }
+
+  }else{
+
+    enemies.forEach(e=>{
+
+      if(!e.alive)return;
+
+      const d =
+        dist(
+          player,
+          e
+        );
+
+      if(
+        d<best &&
+        d<=1800
+      ){
+
+        best=d;
+
+        target=e;
+
+      }
+
+    });
+
+  }
+
+
+  const muzzle =
+    getPlayerMuzzle();
+
+
+  if(target){
+
+    bulletEffect(
+      muzzle,
+      {
+        x:target.x+20,
+        y:target.y+30
+      }
+    );
+
+
+    if(target===saber){
+
+      damageSaber(60);
+
+    }else{
+
+      damageEnemy(
+        target,
+        45
+      );
+
+    }
+
+  }else{
+
+    bulletEffect(
+      muzzle,
+      {
+        x:muzzle.x+900,
+        y:muzzle.y
+      }
+    );
+
+  }
+
+
+  notice(
+    "🚗 VEHICLE GUN FIRE!"
+  );
+
+
+  update();
+
+}
+
+
+/* =====================================================
+   RELOAD
+===================================================== */
+
+function reloadGun(){
+
+  if(inVehicle){
+
+    notice(
+      "🚗 Vehicle gun reload is automatic"
+    );
+
+    return;
+
+  }
+
+
+  const gun =
+    guns[gunIndex];
+
+
+  const missing =
+    gun.magazine-ammo;
+
+
+  if(missing<=0){
+
+    notice(
+      "🔫 MAGAZINE FULL"
+    );
+
+    return;
+
+  }
+
+
+  if(reserve<=0){
+
+    notice(
+      "❌ NO RESERVE AMMO"
+    );
+
+    return;
+
+  }
+
+
+  const amount =
+    Math.min(
+      missing,
+      reserve
+    );
+
+
+  ammo += amount;
+
+  reserve -= amount;
+
+
+  notice(
+    "🔃 RELOADED "+gun.name
+  );
+
+
+  update();
+
+}
+
+
+/* =====================================================
+   DAMAGE ENEMY
+===================================================== */
+
+function damageEnemy(e,dmg){
+
+  if(!e.alive)return;
+
+
+  e.hp =
+    Math.max(
+      0,
+      e.hp-dmg
+    );
+
+
+  const bar =
+    e.el.querySelector(
+      ".enemyLocal"
+    );
+
+
+  if(bar){
+
+    bar.style.width =
+      (e.hp/300*100)+"%";
+
+  }
+
+
+  if(e.hp<=0){
+
+    e.alive=false;
+
+    e.el.style.display =
+      "none";
+
+    e.dot.style.display =
+      "none";
+
+
+    notice(
+      "☠️ دشمن "+e.name+
+      " ختم ہو گئی ہے"
+    );
+
+
+    checkEnemies();
+
+  }
+
+}
+
+
+/* =====================================================
+   CHECK ENEMIES
+===================================================== */
+
+function checkEnemies(){
+
+  const alive =
+    enemies.filter(
+      e=>e.alive
+    ).length;
+
+
+  if(alive===0){
+
+    duel=true;
+
+
+    notice(
+      "⚔️ FINAL DUEL: SABER vs MUHAMMAD RASHID"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   SABER DAMAGE
+===================================================== */
+
+function damageSaber(dmg){
+
+  if(!duel)return;
+
+
+  saber.hp =
+    Math.max(
+      0,
+      saber.hp-dmg
+    );
+
+
+  if(saber.hp<=0){
+
+    ended=true;
+
+
+    setTimeout(()=>{
+
+      if(mission>=30){
+
+        alert(
+          "🏆 CONGRATULATIONS!\n\nALL 30 MISSIONS COMPLETED!"
+        );
+
+        location.reload();
+
+      }else{
+
+        mission++;
+
+        gameEl.style.display =
+          "none";
+
+        showMission();
+
+      }
+
+    },500);
+
+  }
+
+}
+
+
+/* =====================================================
+   PLAYER DAMAGE
+===================================================== */
+
+function damagePlayer(dmg){
+
+  if(ended)return;
+
+
+  playerHP =
+    Math.max(
+      0,
+      playerHP-dmg
+    );
+
+
+  if(playerHP<=0){
+
+    ended=true;
+
+
+    setTimeout(()=>{
+
+      alert(
+        "GAME OVER\nMuhammad Rashid was defeated."
+      );
+
+      location.reload();
+
+    },500);
+
+  }
+
+}
+
+
+/* =====================================================
+   ENEMY AI
+===================================================== */
+
+function enemyAI(e){
+
+  if(!e.alive)return;
+
+
+  let target =
+    player;
+
+
+  const pd =
+    dist(
+      e,
+      player
+    );
+
+
+  const sd =
+    dist(
+      e,
+      saber
+    );
+
+
+  if(
+    !duel &&
+    sd<pd
+  ){
+
+    target =
+      saber;
+
+  }
+
+
+  const dx =
+    target.x-e.x;
+
+  const dy =
+    target.y-e.y;
+
+
+  const d =
+    Math.sqrt(
+      dx*dx+
+      dy*dy
+    );
+
+
+  /*
+    Enemy approaching message.
+  */
+
+  if(
+    target===player &&
+    d<650 &&
+    !e.warned
+  ){
+
+    e.warned=true;
+
+    notice(
+      "⚠️ "+e.name+
+      " ابھی آپ کے نزدیک آ گئی ہے"
+    );
+
+  }
+
+
+  /*
+    Enemy movement.
+  */
+
+  if(d>230){
+
+    e.x +=
+      dx/d*3;
+
+    e.y +=
+      dy/d*3;
+
+    e.el.classList.add(
+      "walk"
+    );
+
+  }else{
+
+    e.el.classList.remove(
+      "walk"
+    );
+
+  }
+
+
+  /*
+    Enemy firing.
+  */
+
+  if(
+    d<750 &&
+    Date.now()-e.last>750
+  ){
+
+    e.last =
+      Date.now();
+
+
+    const start = {
+
+      x:e.x+26+34,
+
+      y:e.y+31+3
+
+    };
+
+
+    bulletEffect(
+      start,
+      {
+        x:target.x+20,
+        y:target.y+30
+      }
+    );
+
+
+    if(target===player){
+
+      notice(
+        "⚠️ "+e.name+
+        " آپ کے اوپر فائرنگ کر رہی ہے"
+      );
+
+
+      damagePlayer(12);
+
+    }else{
+
+      saber.hp =
+        Math.max(
+          0,
+          saber.hp-10
+        );
+
+    }
+
+  }
+
+}
+
+
+/* =====================================================
+   SABER AUTO
+===================================================== */
+
+function saberAI(){
+
+  if(ended)return;
+
+
+  if(!duel){
+
+    let target=null;
+
+    let best=Infinity;
+
+
+    enemies.forEach(e=>{
+
+      if(!e.alive)return;
+
+
+      const d =
+        dist(
+          saber,
+          e
+        );
+
+
+      if(d<best){
+
+        best=d;
+
+        target=e;
+
+      }
+
+    });
+
+
+    if(target){
+
+      const dx =
+        target.x-saber.x;
+
+      const dy =
+        target.y-saber.y;
+
+
+      const d =
+        Math.sqrt(
+          dx*dx+
+          dy*dy
+        );
+
+
+      if(d>260){
+
+        saber.x +=
+          dx/d*5;
+
+        saber.y +=
+          dy/d*5;
+
+        saber.el.classList.add(
+          "walk"
+        );
+
+      }else{
+
+        saber.el.classList.remove(
+          "walk"
+        );
+
+      }
+
+
+      if(
+        d<1000 &&
+        Math.random()<.22
+      ){
+
+        bulletEffect(
+
+          {
+            x:saber.x+60,
+            y:saber.y+34
+          },
+
+          {
+            x:target.x+20,
+            y:target.y+30
+          }
+
+        );
+
+
+        damageEnemy(
+          target,
+          22
+        );
+
+      }
+
+    }
+
+  }else{
+
+    const dx =
+      player.x-saber.x;
+
+    const dy =
+      player.y-saber.y;
+
+
+    const d =
+      Math.sqrt(
+        dx*dx+
+        dy*dy
+      );
+
+
+    if(d>300){
+
+      saber.x +=
+        dx/d*4;
+
+      saber.y +=
+        dy/d*4;
+
+      saber.el.classList.add(
+        "walk"
+      );
+
+    }else{
+
+      saber.el.classList.remove(
+        "walk"
+      );
+
+    }
+
+
+    if(
+      d<1000 &&
+      Math.random()<.22
+    ){
+
+      bulletEffect(
+
+        {
+          x:saber.x+60,
+          y:saber.y+34
+        },
+
+        {
+          x:player.x+20,
+          y:player.y+30
+        }
+
+      );
+
+
+      damagePlayer(18);
+
+    }
+
+  }
+
+}
+
+
+/* =====================================================
+   AI LOOP
+===================================================== */
+
+setInterval(()=>{
+
+  if(
+    ended ||
+    gameEl.style.display!=="block"
+  ){
+
+    return;
+
+  }
+
+
+  enemies.forEach(
+    enemyAI
+  );
+
+
+  saberAI();
+
+
+  update();
+
+},100);
+
+
+/* =====================================================
+   GRENADE
+===================================================== */
+
+function grenade(){
+
+  if(ended)return;
+
+
+  if(grenades<=0){
+
+    notice(
+      "NO GRENADES LEFT"
+    );
+
+    return;
+
+  }
+
+
+  grenades--;
+
+
+  const startX =
+    player.x+20;
+
+  const startY =
+    player.y+20;
+
+
+  const targetX =
+    player.x+360;
+
+  const targetY =
+    player.y;
+
+
+  const g =
+    document.createElement("div");
+
+  g.className =
+    "grenadeProjectile";
+
+  g.textContent =
+    "💣";
+
+  g.style.left =
+    startX+"px";
+
+  g.style.top =
+    startY+"px";
+
+  worldEl.appendChild(g);
+
+
+  requestAnimationFrame(()=>{
+
+    g.style.transition =
+      "left .55s ease-out,top .55s ease-out,transform .55s ease-out";
+
+    g.style.left =
+      targetX+"px";
+
+    g.style.top =
+      targetY+"px";
+
+    g.style.transform =
+      "rotate(720deg)";
+
+  });
+
+
+  setTimeout(()=>{
+
+    g.remove();
+
+
+    const explosion =
+      document.createElement("div");
+
+    explosion.className =
+      "explosion";
+
+    explosion.textContent =
+      "💥";
+
+    explosion.style.left =
+      (targetX-35)+"px";
+
+    explosion.style.top =
+      (targetY-35)+"px";
+
+    worldEl.appendChild(explosion);
+
+
+    enemies.forEach(e=>{
+
+      if(!e.alive)return;
+
+
+      const d =
+        Math.sqrt(
+
+          (targetX-e.x)**2 +
+
+          (targetY-e.y)**2
+
+        );
+
+
+      if(d<450){
+
+        damageEnemy(
+          e,
+          100
+        );
+
+      }
+
+    });
+
+
+    setTimeout(()=>{
+
+      explosion.remove();
+
+    },600);
+
+
+    notice(
+      "💥 GRENADE EXPLOSION!"
+    );
+
+
+    update();
+
+  },550);
+
+
+  update();
+
+}
+
+
+/* =====================================================
+   GUN SWITCH
+===================================================== */
+
+function switchGun(){
+
+  if(inVehicle){
+
+    notice(
+      "🚗 VEHICLE GUN IS ACTIVE"
+    );
+
+    return;
+
+  }
+
+
+  gunIndex++;
+
+  if(
+    gunIndex>=guns.length
+  ){
+
+    gunIndex=0;
+
+  }
+
+
+  ammo =
+    guns[gunIndex].magazine;
+
+  reserve =
+    guns[gunIndex].reserve;
+
+
+  notice(
+    "🔫 "+guns[gunIndex].name
+  );
+
+
+  update();
+
+}
+
+
+/* =====================================================
+   UPDATE
+===================================================== */
+
+function update(){
+
+  const p =
+    document.getElementById("player");
+
+
+  if(!p)return;
+
+
+  /*
+    PLAYER
+  */
+
+  p.style.left =
+    player.x+"px";
+
+  p.style.top =
+    player.y+"px";
+
+
+  /*
+    SABER
+  */
+
+  if(saber.el){
+
+    saber.el.style.left =
+      saber.x+"px";
+
+    saber.el.style.top =
+      saber.y+"px";
+
+  }
+
+
+  /*
+    ENEMIES
+  */
+
+  enemies.forEach(e=>{
+
+    if(!e.alive)return;
+
+
+    e.el.style.left =
+      e.x+"px";
+
+    e.el.style.top =
+      e.y+"px";
+
+  });
+
+
+  /*
+    VEHICLES
+  */
+
+  vehicles.forEach(v=>{
+
+    v.el.style.left =
+      v.x+"px";
+
+    v.el.style.top =
+      v.y+"px";
+
+  });
+
+
+  /*
+    HEALTH
+  */
+
+  document
+    .getElementById("mainHealth")
+    .style.width =
+      (playerHP/40)+"%";
+
+
+  document
+    .getElementById("playerLocal")
+    .style.width =
+      (playerHP/40)+"%";
+
+
+  document
+    .getElementById("saberHealth")
+    .style.width =
+      (saber.hp/10)+"%";
+
+
+  document
+    .getElementById("saberLocal")
+    .style.width =
+      (saber.hp/10)+"%";
+
+
+  /*
+    WEAPON
+  */
+
+  document
+    .getElementById("weaponName")
+    .textContent =
+      inVehicle
+        ? "VEHICLE GUN"
+        : guns[gunIndex].name;
+
+
+  document
+    .getElementById("ammo")
+    .textContent =
+      inVehicle
+        ? "AUTO"
+        : ammo+" / "+reserve;
+
+
+  document
+    .getElementById("grenades")
+    .textContent =
+      grenades;
+
+
+  document
+    .getElementById("vehicleStatus")
+    .textContent =
+      inVehicle
+        ? "IN VEHICLE"
+        : "ON FOOT";
+
+
+  /*
+    ENEMY COUNT
+  */
+
+  const alive =
+    enemies.filter(
+      e=>e.alive
+    ).length;
+
+
+  document
+    .getElementById("enemyCount")
+    .textContent =
+      " 👹 "+alive;
+
+
+  document
+    .getElementById("enemyHud")
+    .textContent =
+      alive;
+
+
+  camera();
+
+  mapUpdate();
+
+}
+
+
+/* =====================================================
+   CAMERA
+===================================================== */
+
+function camera(){
+
+  let cx =
+    player.x-
+    window.innerWidth/2;
+
+
+  let cy =
+    player.y-
+    window.innerHeight/2;
+
+
+  cx =
+    Math.max(
+      0,
+      Math.min(
+        WORLD_W-
+        window.innerWidth,
+        cx
+      )
+    );
+
+
+  cy =
+    Math.max(
+      0,
+      Math.min(
+        WORLD_H-
+        window.innerHeight,
+        cy
+      )
+    );
+
+
+  worldEl.style.transform =
+    `translate(${-cx}px,${-cy}px)`;
+
+}
+
+
+/* =====================================================
+   MAP
+===================================================== */
+
+function mapUpdate(){
+
+  const pd =
+    document.getElementById("pDot");
+
+
+  pd.style.left =
+    player.x/
+    WORLD_W*
+    100+"%";
+
+
+  pd.style.top =
+    player.y/
+    WORLD_H*
+    100+"%";
+
+
+  const sd =
+    document.getElementById("sDot");
+
+
+  sd.style.left =
+    saber.x/
+    WORLD_W*
+    100+"%";
+
+
+  sd.style.top =
+    saber.y/
+    WORLD_H*
+    100+"%";
+
+
+  enemies.forEach(e=>{
+
+    e.dot.style.left =
+      e.x/
+      WORLD_W*
+      100+"%";
+
+
+    e.dot.style.top =
+      e.y/
+      WORLD_H*
+      100+"%";
+
+
+    e.dot.style.display =
+      e.alive
+        ? "block"
+        : "none";
+
+  });
+
+
+  vehicles.forEach(v=>{
+
+    v.dot.style.left =
+      v.x/
+      WORLD_W*
+      100+"%";
+
+
+    v.dot.style.top =
+      v.y/
+      WORLD_H*
+      100+"%";
+
+  });
+
+}
+
+
+/* =====================================================
+   NOTICE
+===================================================== */
+
+function notice(text){
+
+  const n =
+    document.getElementById("notice");
+
+
+  n.textContent =
+    text;
+
+
+  n.style.display =
+    "block";
+
+
+  clearTimeout(
+    window.noticeTimer
+  );
+
+
+  window.noticeTimer =
+    setTimeout(()=>{
+
+      n.style.display =
+        "none";
+
+    },1800);
+
+}
+
+
+/* =====================================================
+   KEYBOARD
+===================================================== */
+
+document.addEventListener(
+  "keydown",
+  e=>{
+
+    if(e.key==="ArrowUp")
+      movePlayer(0,-1);
+
+    if(e.key==="ArrowDown")
+      movePlayer(0,1);
+
+    if(e.key==="ArrowLeft")
+      movePlayer(-1,0);
+
+    if(e.key==="ArrowRight")
+      movePlayer(1,0);
+
+    if(e.key===" ")
+      firePlayer();
+
+    if(
+      e.key.toLowerCase()==="g"
+    )
+      grenade();
+
+    if(
+      e.key.toLowerCase()==="q"
+    )
+      switchGun();
+
+    if(
+      e.key.toLowerCase()==="r"
+    )
+      reloadGun();
+
+    if(
+      e.key.toLowerCase()==="e"
+    )
+      toggleVehicle();
+
+  }
+);
+
+
+/* =====================================================
+   TOUCH
+===================================================== */
+
+document.addEventListener(
+  "touchmove",
+  e=>e.preventDefault(),
+  {
+    passive:false
+  }
+);
+
+
+/* =====================================================
+   ENTER KEY ON ACCESS CODE
+===================================================== */
+
+document
+  .getElementById("code")
+  .addEventListener(
+    "keydown",
+    function(e){
+
+      if(e.key==="Enter"){
+
+        checkCode();
+
+      }
+
+    }
+  );
+
 </script>
+
 </body>
 </html>
