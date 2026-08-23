@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlimited Earning - Official Investment Platform</title>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #1e293b;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #334155;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--secondary), #0f172a);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .auth-container h2 {
+            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .switch-auth a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .package-box {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .package-box:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1);
+        }
+
+        .package-box h3 {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .package-details {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-withdraw {
+            background-color: #ef4444;
+        }
+        .btn-withdraw:hover {
+            background-color: #dc2626;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--secondary);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+        }
+
+        .wallet-banner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #065f46;
+            font-size: 0.95rem;
+        }
+
+        .wallet-banner strong {
+            color: #047857;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Unlimited Earning</h1>
+        <p>Your Trusted Monthly Investment & Profit Platform</p>
+        <button id="logout-btn" class="logout-btn hidden" onclick="logoutUser()">Logout</button>
+    </header>
+
+    <!-- AUTHENTICATION SECTION (Login & Signup) -->
+    <div id="auth-section" class="container">
+        <!-- Signup Form -->
+        <div id="signup-box" class="auth-container">
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="signup-name" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>Mobile Number / Username</label>
+                <input type="text" id="signup-user" placeholder="Enter mobile number">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="signup-pass" placeholder="Create a password">
+            </div>
+            <button class="btn" onclick="registerUser()">Sign Up</button>
+            <div class="switch-auth">
+                Already have an account? <a onclick="toggleAuth('login')">Login here</a>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-box" class="auth-container hidden">
+            <h2>User Login</h2>
+            <div class="form-group">
+                <label>Mobile Number / Username</label>
+                <input type="text" id="login-user" placeholder="Enter your mobile number">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="login-pass" placeholder="Enter your password">
+            </div>
+            <button class="btn" onclick="loginUser()">Login</button>
+            <div class="switch-auth">
+                Don't have an account? <a onclick="toggleAuth('signup')">Sign Up here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD SECTION (Hidden by default until login) -->
+    <div id="dashboard-section" class="container hidden">
+
+        <!-- Dashboard Summary -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>Main Balance</h3>
+                <div class="value">Rs. <span id="user-balance">0</span></div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Plan</h3>
+                <div class="value" id="active-plan" style="font-size: 1.4rem; color: var(--primary);">None</div>
+            </div>
+        </div>
+
+        <!-- Investment Plans -->
+        <div class="card">
+            <h2>📦 Monthly Investment Plans</h2>
+            <div class="packages-grid">
+                <div class="package-box">
+                    <h3>Basic Plan</h3>
+                    <div class="price">Rs. 200</div>
+                    <div class="package-details">
+                        Daily Profit: Rs. 20<br>
+                        Duration: 30 Days<br>
+                        Total Return: Rs. 600
+                    </div>
+                    <button class="btn" onclick="buyPlan('Basic Plan', 200)">Buy Now</button>
+                </div>
+
+                <div class="package-box">
+                    <h3>Standard Plan</h3>
+                    <div class="price">Rs. 600</div>
+                    <div class="package-details">
+                        Daily Profit: Rs. 70<br>
+                        Duration: 30 Days<br>
+                        Total Return: Rs. 2,100
+                    </div>
+                    <button class="btn" onclick="buyPlan('Standard Plan', 600)">Buy Now</button>
+                </div>
+
+                <div class="package-box">
+                    <h3>Gold Plan</h3>
+                    <div class="price">Rs. 1000</div>
+                    <div class="package-details">
+                        Daily Profit: Rs. 130<br>
+                        Duration: 30 Days<br>
+                        Total Return: Rs. 3,900
+                    </div>
+                    <button class="btn" onclick="buyPlan('Gold Plan', 1000)">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposit Section -->
+        <div class="card">
+            <h2>💳 Deposit Funds (Easypaisa / JazzCash)</h2>
+            <div class="wallet-banner">
+                Please send your amount to the official Easypaisa account below, then fill out the form with your Transaction ID (TID).<br><br>
+                <strong>Account Name:</strong> Muhammad Rashid<br>
+                <strong>Easypaisa Number:</strong> 03329553010
+            </div>
+            <div class="form-group">
+                <label>Deposit Amount (PKR)</label>
+                <input type="number" id="deposit-amount" placeholder="e.g., 1000">
+            </div>
+            <div class="form-group">
+                <label>Transaction ID (TID)</label>
+                <input type="text" id="deposit-tid" placeholder="Enter Easypaisa Transaction ID / Tnx ID">
+            </div>
+            <button class="btn" onclick="submitDeposit()">Submit Deposit Request</button>
+        </div>
+
+        <!-- Withdrawal Section -->
+        <div class="card">
+            <h2>💸 Withdraw Earnings</h2>
+            <div class="form-group">
+                <label>Select Payment Method</label>
+                <select id="withdraw-method">
+                    <option value="Easypaisa">Easypaisa</option>
+                    <option value="JazzCash">JazzCash</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Account Holder Name</label>
+                <input type="text" id="withdraw-name" placeholder="Enter your account title">
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="withdraw-acc" placeholder="Enter mobile account number">
+            </div>
+            <div class="form-group">
+                <label>Withdrawal Amount (PKR)</label>
+                <input type="number" id="withdraw-amount" placeholder="Enter amount to withdraw">
+            </div>
+            <button class="btn btn-withdraw" onclick="submitWithdraw()">Request Withdrawal</button>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Unlimited Earning. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let currentUser = null;
+
+        // Check if user is already logged in on page load
+        window.onload = function() {
+            let savedUser = localStorage.getItem('active_user');
+            if (savedUser) {
+                currentUser = JSON.parse(localStorage.getItem('user_' + savedUser));
+                showDashboard();
+            }
+        };
+
+        function toggleAuth(formType) {
+            if (formType === 'login') {
+                document.getElementById('signup-box').classList.add('hidden');
+                document.getElementById('login-box').classList.remove('hidden');
+            } else {
+                document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('signup-box').classList.remove('hidden');
+            }
+        }
+
+        function registerUser() {
+            let name = document.getElementById('signup-name').value.trim();
+            let username = document.getElementById('signup-user').value.trim();
+            let pass = document.getElementById('signup-pass').value.trim();
+
+            if (!name || !username || !pass) {
+                alert('Please fill in all fields to sign up.');
+                return;
+            }
+
+            if (localStorage.getItem('user_' + username)) {
+                alert('This mobile number/username is already registered. Please login.');
+                return;
+            }
+
+            let userData = {
+                name: name,
+                username: username,
+                password: pass,
+                balance: 0,
+                activePlan: 'None'
+            };
+
+            localStorage.setItem('user_' + username, JSON.stringify(userData));
+            alert('Account created successfully! Please login now.');
+            toggleAuth('login');
+        }
+
+        function loginUser() {
+            let username = document.getElementById('login-user').value.trim();
+            let pass = document.getElementById('login-pass').value.trim();
+
+            let savedData = localStorage.getItem('user_' + username);
+            if (!savedData) {
+                alert('Account not found! Please sign up first.');
+                return;
+            }
+
+            let userData = JSON.parse(savedData);
+            if (userData.password === pass) {
+                currentUser = userData;
+                localStorage.setItem('active_user', username);
+                showDashboard();
+            } else {
+                alert('Incorrect password! Please try again.');
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            document.getElementById('logout-btn').classList.remove('hidden');
+            updateUI();
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('active_user');
+            currentUser = null;
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('logout-btn').classList.add('hidden');
+            document.getElementById('auth-section').classList.remove('hidden');
+        }
+
+        function saveUserData() {
+            if (currentUser) {
+                localStorage.setItem('user_' + currentUser.username, JSON.stringify(currentUser));
+            }
+        }
+
+        function updateUI() {
+            if (currentUser) {
+                document.getElementById('user-balance').innerText = currentUser.balance.toLocaleString();
+                document.getElementById('active-plan').innerText = currentUser.activePlan;
+            }
+        }
+
+        function buyPlan(planName, price) {
+            if (currentUser.balance >= price) {
+                currentUser.balance -= price;
+                currentUser.activePlan = planName;
+                saveUserData();
+                updateUI();
+                alert(`Congratulations! You have successfully subscribed to the ${planName}.`);
+            } else {
+                alert('Insufficient balance! Please deposit funds into your account first.');
+            }
+        }
+
+        function submitDeposit() {
+            let amount = Number(document.getElementById('deposit-amount').value);
+            let tid = document.getElementById('deposit-tid').value;
+            
+            if(amount > 0 && tid.trim() !== '') {
+                currentUser.balance += amount;
+                saveUserData();
+                updateUI();
+                alert(`Your deposit request of Rs. ${amount} has been submitted successfully! Balance updated.`);
+                document.getElementById('deposit-amount').value = '';
+                document.getElementById('deposit-tid').value = '';
+            } else {
+                alert('Please enter a valid amount and transaction ID (TID).');
+            }
+        }
+
+        function submitWithdraw() {
+            let amount = Number(document.getElementById('withdraw-amount').value);
+            let acc = document.getElementById('withdraw-acc').value;
+            let name = document.getElementById('withdraw-name').value;
+
+            if(amount > 0 && acc.trim() !== '' && name.trim() !== '') {
+                if(currentUser.balance >= amount) {
+                    currentUser.balance -= amount;
+                    saveUserData();
+                    updateUI();
+                    alert(`Your withdrawal request of Rs. ${amount} has been sent successfully and is pending approval.`);
+                    document.getElementById('withdraw-amount').value = '';
+                    document.getElementById('withdraw-acc').value = '';
+                    document.getElementById('withdraw-name').value = '';
+                } else {
+                    alert('Insufficient balance for this withdrawal!');
+                }
+            } else {
+                alert('Please fill in all withdrawal fields correctly.');
+            }
+        }
+    </script>
+</body>
+</html>
